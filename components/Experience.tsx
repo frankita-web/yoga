@@ -9,6 +9,7 @@ import { dayName, shortDate } from "@/lib/week";
 import AshtangaPlayer from "./AshtangaPlayer";
 import ChakraArc from "./ChakraArc";
 import ChakraBody, { type BodyMode } from "./ChakraBody";
+import DailyHeader from "./DailyHeader";
 import SavasanaTimer from "./SavasanaTimer";
 import WeekTracker from "./WeekTracker";
 
@@ -78,9 +79,10 @@ export default function Experience() {
     <div className="app" data-mode={mode} style={{ ["--accent" as string]: active?.color ?? "#d9d9d6" }}>
       <header className="topbar">
         <span className="wordmark">Prana</span>
-        <span className="mono topbar__mid">Ashtanga · Chakras · Savasana</span>
         <span className="mono">{today ? `${dayName(today)} ${shortDate(today)}` : ""}</span>
       </header>
+
+      <DailyHeader />
 
       <main className="stage">
         <svg className="stage__rails" viewBox={`0 0 ${STAGE.width} ${STAGE.height}`} aria-hidden="true">
