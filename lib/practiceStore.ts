@@ -70,6 +70,13 @@ function createStore(key: string) {
       write({ ...s, days });
     },
 
+    /** Adds days logged on another device (union; never removes). */
+    mergeDays(remote: string[]) {
+      const s = read();
+      const missing = remote.filter((d) => !s.days.includes(d));
+      if (missing.length) write({ ...s, days: [...s.days, ...missing].sort() });
+    },
+
     setGoal(goal: GoalSetting) {
       write({ ...read(), goal });
     },

@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useFriends } from "@/lib/cloud";
 import { CHAKRAS } from "@/lib/chakras";
 import { REPETITIONS, mantraFor } from "@/lib/mantras";
 import { summarize } from "@/lib/practiceStore";
 import { greeting } from "@/lib/profile";
 import { markMantraSeen, useHour, useMantraSeen, usePractice, useProfile, useToday } from "@/lib/usePractice";
 import { dayName, shortDate } from "@/lib/week";
+import FriendPill from "./FriendPill";
 
 const BEAD_RADIUS = 104;
 
@@ -17,12 +19,13 @@ function weekLine(count: number, goal: number) {
   return `Vas ${count} de ${goal} esta semana. ${left === 1 ? "Te falta solo 1." : `Te faltan ${left}.`}`;
 }
 
-export default function DailyHeader() {
+export default function DailyHeader({ notify }: { notify: (message: string) => void }) {
   const today = useToday();
   const hour = useHour();
   const seen = useMantraSeen();
   const practice = usePractice();
   const { id: profileId, name } = useProfile();
+  const friends = useFriends();
   const [reopened, setReopened] = useState(false);
   const [count, setCount] = useState(0);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -60,21 +63,26 @@ export default function DailyHeader() {
       </h1>
       <p className="daily__sub">{summary ? weekLine(summary.count, summary.goal) : " "}</p>
 
-      {mantra && (
-        <button
-          className="pill daily__mantra"
-          onClick={reopen}
-          style={{ ["--c" as string]: chakra?.color ?? "#a78bfa" }}
-        >
-          <span className="daily__mantra-dot" aria-hidden="true">
-            ॐ
-          </span>
-          <span className="pill__text">
-            <span className="mono">Mantra de hoy</span>
-            <strong>{mantra.text}</strong>
-          </span>
-        </button>
-      )}
+      <div className="daily__pills">
+        {mantra && (
+          <button
+            className="pill daily__mantra"
+            onClick={reopen}
+            style={{ ["--c" as string]: chakra?.color ?? "#a78bfa" }}
+          >
+            <span className="daily__mantra-dot" aria-hidden="true">
+              ॐ
+            </span>
+            <span className="pill__text">
+              <span className="mono">Mantra de hoy</span>
+              <strong>{mantra.text}</strong>
+            </span>
+          </button>
+        )}
+        {friends.map((f) => (
+          <FriendPill key={f.id} friend={f} notify={notify} />
+        ))}
+      </div>
 
       <dialog
         ref={dialogRef}

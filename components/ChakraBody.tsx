@@ -69,12 +69,7 @@ export default function ChakraBody({ active, mode, onHover, onSelect }: Props) {
 
   return (
     <div className="body" data-mode={mode} data-active={active ? "true" : "false"}>
-      <svg
-        className="body__svg"
-        viewBox="0 0 400 500"
-        role="group"
-        aria-label="Silueta humana con los siete chakras"
-      >
+      <svg className="body__svg" viewBox="0 0 400 500" role="group" aria-label="Silueta humana con los siete chakras">
         <defs>
           <linearGradient id={ids.fill} x1="0" y1="0" x2="0" y2="500" gradientUnits="userSpaceOnUse">
             <stop offset="0" stopColor="#ffffff" />
@@ -109,10 +104,7 @@ export default function ChakraBody({ active, mode, onHover, onSelect }: Props) {
 
         {/* Inner light that travels to the active chakra */}
         <g clipPath={`url(#${ids.clip})`}>
-          <g
-            className="body__inner-glow"
-            style={{ transform: `translateY(${active?.y ?? 250}px)` }}
-          >
+          <g className="body__inner-glow" style={{ transform: `translateY(${active?.y ?? 250}px)` }}>
             <circle cx={CX} cy={0} r={150} fill={`url(#${ids.glow})`} />
           </g>
         </g>

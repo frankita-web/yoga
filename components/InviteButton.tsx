@@ -1,11 +1,13 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { isValidName, slugFor } from "@/lib/profile";
+import { addFriend } from "@/lib/cloud";
+import { isValidName, profileFromSlug, slugFor } from "@/lib/profile";
 import { useProfile } from "@/lib/usePractice";
 
 export default function InviteButton() {
-  const { id } = useProfile();
+  const profile = useProfile();
+  const { id } = profile;
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [name, setName] = useState(id ? "" : "Antonia");
   const [origin, setOrigin] = useState("");
@@ -22,12 +24,20 @@ export default function InviteButton() {
     dialogRef.current?.showModal();
   };
 
+  // Whoever you invite shows up next to your greeting.
+  const remember = () => {
+    const friend = profileFromSlug(slugFor(name));
+    if (friend) addFriend(profile, friend);
+  };
+
   const copy = async () => {
+    remember();
     await navigator.clipboard.writeText(link);
     setCopied(true);
   };
 
-  const share = () =>
+  const share = () => {
+    remember();
     navigator
       .share({
         title: "Prana",
@@ -35,6 +45,7 @@ export default function InviteButton() {
         url: link,
       })
       .catch(() => {});
+  };
 
   return (
     <>
@@ -57,7 +68,8 @@ export default function InviteButton() {
             Su propio espacio, a la par del tuyo
           </h2>
           <p className="invite__lede">
-            Con su saludo, su mantra del día y su propio registro de prácticas. Lo que marque no se mezcla con lo tuyo.
+            Con su saludo, su mantra del día y su propio registro. Verás su avance junto al tuyo y te avisaremos cuando
+            practique.
           </p>
 
           <label className="invite__field">

@@ -24,7 +24,11 @@ export default function ChakraArc({ active, selected, onHover, onSelect }: Props
           <li
             key={c.id}
             className="chakra-arc__item"
-            style={{ ["--x" as string]: `${POINTS[i].x}px`, ["--y" as string]: `${POINTS[i].y}px`, ["--c" as string]: c.color }}
+            style={{
+              ["--x" as string]: `${POINTS[i].x}px`,
+              ["--y" as string]: `${POINTS[i].y}px`,
+              ["--c" as string]: c.color,
+            }}
           >
             <button
               className="chakra-arc__btn"

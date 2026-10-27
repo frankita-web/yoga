@@ -304,8 +304,64 @@ button:disabled {
   color: var(--ink-2);
 }
 
-.daily__mantra {
+.daily__pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
   margin-top: 16px;
+}
+
+.friend {
+  padding-right: 18px;
+  background: #fff;
+  text-align: left;
+  animation: rise 0.5s var(--ease);
+}
+
+.friend__avatar {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #f6efd6;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.friend .pill__text .mono {
+  font-size: 10px;
+}
+
+.friend__count {
+  font-weight: 500;
+  color: var(--ink-3);
+}
+
+.friend__week {
+  display: flex;
+  gap: 4px;
+  margin-left: 4px;
+}
+
+.friend__week i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.friend__week i[data-done="true"] {
+  background: var(--ink);
+  box-shadow: none;
+}
+
+.friend__week i[data-today="true"]:not([data-done="true"]) {
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+}
+
+.daily__mantra {
   padding-right: 22px;
   border: 0;
   background: color-mix(in oklab, var(--c) 14%, #fff);

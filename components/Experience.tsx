@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CHAKRA_ARC, STAGE, WEEK_ARC, arcPath } from "@/lib/arc";
 import { CHAKRAS } from "@/lib/chakras";
+import { useCloudSync } from "@/lib/cloud";
 import { summarize } from "@/lib/practiceStore";
 import { usePracticeStore, useToday } from "@/lib/usePractice";
 import { dayName, shortDate } from "@/lib/week";
@@ -30,6 +31,14 @@ export default function Experience() {
   const today = useToday();
   const store = usePracticeStore();
 
+  useCloudSync();
+
+  const notify = useCallback((message: string) => {
+    setToast(message);
+    clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 6000);
+  }, []);
+
   const mode: BodyMode = resting ? "savasana" : practicing ? "practice" : "idle";
 
   // While a class or savasana plays, light the chakras one by one:
@@ -52,12 +61,10 @@ export default function Experience() {
     const t = setInterval(() => {
       if (!store.addListened(today, LISTEN_TICK)) return;
       const { count, goal } = summarize(store.getSnapshot(), today);
-      setToast(`Práctica registrada · ${count} de ${goal} esta semana`);
-      clearTimeout(toastTimer.current);
-      toastTimer.current = setTimeout(() => setToast(null), 5000);
+      notify(`Práctica registrada · ${count} de ${goal} esta semana`);
     }, LISTEN_TICK * 1000);
     return () => clearInterval(t);
-  }, [practicing, today, store]);
+  }, [practicing, today, store, notify]);
 
   useEffect(() => () => clearTimeout(toastTimer.current), []);
 
@@ -87,7 +94,7 @@ export default function Experience() {
         </span>
       </header>
 
-      <DailyHeader />
+      <DailyHeader notify={notify} />
 
       <main className="stage">
         <svg className="stage__rails" viewBox={`0 0 ${STAGE.width} ${STAGE.height}`} aria-hidden="true">

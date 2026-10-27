@@ -35,7 +35,10 @@ export function isoWeek(key: string) {
   const thursday = new Date(d);
   thursday.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
   const firstThursday = new Date(thursday.getFullYear(), 0, 4);
-  return 1 + Math.round(((thursday.getTime() - firstThursday.getTime()) / 86400000 - 3 + ((firstThursday.getDay() + 6) % 7)) / 7);
+  return (
+    1 +
+    Math.round(((thursday.getTime() - firstThursday.getTime()) / 86400000 - 3 + ((firstThursday.getDay() + 6) % 7)) / 7)
+  );
 }
 
 const DAY_NAMES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
