@@ -1,0 +1,1001 @@
+@import "tailwindcss";
+
+@property --accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #5e5ce6;
+}
+
+:root {
+  --bg: #000;
+  --label: #f5f5f7;
+  --label-2: rgba(235, 235, 245, 0.62);
+  --label-3: rgba(235, 235, 245, 0.34);
+  --hairline: rgba(255, 255, 255, 0.08);
+  --glass: rgba(24, 24, 27, 0.58);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html {
+  background: var(--bg);
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--label);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", var(--font-inter), system-ui,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+/* ---------- Page ---------- */
+
+.experience {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: clip;
+  transition: --accent 0.9s var(--ease);
+}
+
+.aura {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(42% 46% at 50% 52%, color-mix(in oklab, var(--accent) 30%, transparent), transparent 72%),
+    radial-gradient(70% 40% at 50% 110%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 70%);
+  opacity: 0.35;
+  transition: opacity 1s var(--ease);
+}
+
+.aura[data-on="true"] {
+  opacity: 1;
+}
+
+.hero {
+  position: relative;
+  text-align: center;
+  padding: 72px 24px 0;
+  transition: opacity 1.6s var(--ease);
+}
+
+.hero__eyebrow {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--label-2);
+  margin-bottom: 14px;
+}
+
+.hero__title {
+  margin: 0;
+  font-size: clamp(44px, 7vw, 88px);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+.hero__gradient {
+  background: linear-gradient(90deg, #ff453a, #ff9f0a, #ffd60a, #30d158, #32ade6, #5e5ce6, #bf5af2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero__lede {
+  margin: 18px auto 0;
+  font-size: clamp(17px, 1.6vw, 21px);
+  color: var(--label-2);
+  font-weight: 500;
+}
+
+.stage {
+  position: relative;
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 36px 28px 40px;
+  display: grid;
+  grid-template-columns: minmax(300px, 360px) minmax(0, 1fr) minmax(300px, 360px);
+  grid-template-areas: "player body savasana";
+  gap: 32px;
+  align-items: start;
+}
+
+.stage__player {
+  grid-area: player;
+  transition: opacity 1.6s var(--ease);
+}
+
+.stage__body {
+  grid-area: body;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stage__savasana {
+  grid-area: savasana;
+}
+
+.experience[data-mode="savasana"] .hero,
+.experience[data-mode="savasana"] .stage__player {
+  opacity: 0.3;
+}
+
+@media (max-width: 1120px) {
+  .stage {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "body body"
+      "player savasana";
+  }
+}
+
+@media (max-width: 720px) {
+  .hero {
+    padding-top: 48px;
+  }
+  .stage {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "body"
+      "player"
+      "savasana";
+    padding: 24px 16px 32px;
+    gap: 24px;
+  }
+}
+
+.footer {
+  position: relative;
+  text-align: center;
+  padding: 16px 24px 48px;
+  font-size: 12px;
+  color: var(--label-3);
+}
+
+/* ---------- Cards ---------- */
+
+.card {
+  position: relative;
+  background: var(--glass);
+  -webkit-backdrop-filter: saturate(180%) blur(30px);
+  backdrop-filter: saturate(180%) blur(30px);
+  border: 1px solid var(--hairline);
+  border-radius: 30px;
+  padding: 26px;
+  box-shadow:
+    0 40px 80px -40px rgba(0, 0, 0, 0.9),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.card__eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--label-3);
+}
+
+.card__title {
+  margin: 6px 0 0;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.card__subtitle {
+  margin: 6px 0 0;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--label-2);
+}
+
+/* ---------- Transport controls ---------- */
+
+.transport {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  margin: 14px 0 18px;
+}
+
+.play-btn {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: 0;
+  display: grid;
+  place-items: center;
+  background: var(--label);
+  color: #000;
+  box-shadow: 0 10px 30px -8px rgba(255, 255, 255, 0.25);
+  transition:
+    transform 0.4s var(--spring),
+    box-shadow 0.4s var(--ease),
+    opacity 0.3s;
+}
+
+.play-btn:hover:not(:disabled) {
+  transform: scale(1.06);
+}
+
+.play-btn:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.play-btn:disabled {
+  opacity: 0.4;
+}
+
+.play-btn[data-busy="true"] {
+  animation: busy 1.2s ease-in-out infinite;
+}
+
+.play-btn--calm {
+  background: linear-gradient(135deg, #bf5af2, #5e5ce6 60%, #32ade6);
+  color: #fff;
+  box-shadow: 0 14px 40px -10px rgba(140, 92, 240, 0.7);
+}
+
+.icon-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 0;
+  background: transparent;
+  color: var(--label-2);
+  display: grid;
+  place-items: center;
+  transition:
+    background 0.25s,
+    color 0.25s,
+    transform 0.4s var(--spring);
+}
+
+.icon-btn:hover:not(:disabled) {
+  color: var(--label);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.icon-btn:active:not(:disabled) {
+  transform: scale(0.9);
+}
+
+.icon-btn:disabled {
+  opacity: 0.3;
+}
+
+.icon-btn--ghost {
+  visibility: hidden;
+}
+
+:where(button, [role="button"], input):focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--accent) 80%, white);
+  outline-offset: 3px;
+}
+
+/* ---------- Range inputs ---------- */
+
+.scrubber input,
+.volume input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--label) var(--p), rgba(255, 255, 255, 0.16) var(--p));
+  cursor: pointer;
+  transition: height 0.2s var(--ease);
+}
+
+.scrubber input:hover {
+  height: 8px;
+}
+
+.scrubber input::-webkit-slider-thumb,
+.volume input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.scrubber input::-moz-range-thumb,
+.volume input::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0;
+}
+
+.scrubber input:hover::-webkit-slider-thumb,
+.volume input:hover::-webkit-slider-thumb,
+.scrubber input:focus-visible::-webkit-slider-thumb {
+  opacity: 1;
+}
+
+.scrubber input:hover::-moz-range-thumb,
+.volume input:hover::-moz-range-thumb {
+  opacity: 1;
+}
+
+.scrubber__times {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--label-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.volume {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--label-3);
+  padding: 0 4px;
+}
+
+.volume input {
+  height: 4px;
+}
+
+/* ---------- Ashtanga player ---------- */
+
+.player__artwork {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  margin: 22px 0 18px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #111;
+  transform: scale(0.94);
+  box-shadow: 0 20px 40px -24px rgba(0, 0, 0, 0.9);
+  transition:
+    transform 0.7s var(--spring),
+    box-shadow 0.7s var(--ease);
+}
+
+.player__artwork[data-playing="true"] {
+  transform: scale(1);
+  box-shadow: 0 28px 60px -20px color-mix(in oklab, var(--accent) 55%, transparent);
+}
+
+.player__frame,
+.player__frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.player__loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  color: var(--label-3);
+}
+
+.player__now {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.player__track {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.player__teacher {
+  font-size: 15px;
+  color: var(--label-2);
+}
+
+.player__error {
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: #ff9f0a;
+}
+
+.player__error a {
+  text-decoration: underline;
+}
+
+.eq {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+
+.eq i {
+  width: 3px;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--label);
+  transform-origin: bottom;
+  animation: eq 0.9s ease-in-out infinite alternate;
+}
+
+.eq i:nth-child(2) {
+  animation-delay: -0.3s;
+}
+
+.eq i:nth-child(3) {
+  animation-delay: -0.6s;
+}
+
+.eq[data-playing="false"] i {
+  animation: none;
+  transform: scaleY(0.3);
+  opacity: 0.5;
+}
+
+.tracklist {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 14px 0 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.tracklist__item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 26px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 10px;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  text-align: left;
+  transition: background 0.2s;
+}
+
+.tracklist__item:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.tracklist__item[data-current="true"] {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.tracklist__num {
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  color: var(--label-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.tracklist__meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.tracklist__title {
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tracklist__teacher {
+  font-size: 13px;
+  color: var(--label-2);
+}
+
+.tracklist__len {
+  font-size: 13px;
+  color: var(--label-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Body & chakras ---------- */
+
+.body {
+  position: relative;
+  width: min(100%, 440px);
+  aspect-ratio: 400 / 500;
+}
+
+.body__svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.body__figure {
+  transition: opacity 1.5s var(--ease);
+}
+
+.body__inner-glow {
+  opacity: 0;
+  transition:
+    transform 0.9s var(--ease),
+    opacity 0.6s var(--ease);
+}
+
+.body[data-active="true"] .body__inner-glow {
+  opacity: 1;
+}
+
+.body__spine {
+  opacity: 0.2;
+  transition: opacity 0.6s var(--ease);
+}
+
+.body[data-active="true"] .body__spine {
+  opacity: 0.6;
+}
+
+.chakra {
+  cursor: pointer;
+  outline: none;
+}
+
+.chakra__scale {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.6s var(--spring);
+}
+
+.chakra[data-active="true"] .chakra__scale {
+  transform: scale(1.3);
+}
+
+.chakra__halo {
+  opacity: 0;
+  transition: opacity 0.6s var(--ease);
+}
+
+.chakra[data-active="true"] .chakra__halo {
+  opacity: 1;
+}
+
+.chakra__petals {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 0.6s var(--ease);
+  animation: spin 40s linear infinite;
+}
+
+.chakra[data-active="true"] .chakra__petals {
+  opacity: 0.85;
+}
+
+.chakra__ring {
+  opacity: 0.5;
+  transition:
+    opacity 0.4s,
+    stroke-width 0.3s;
+}
+
+.chakra[data-active="true"] .chakra__ring {
+  opacity: 1;
+}
+
+.chakra:focus-visible .chakra__ring {
+  stroke-width: 3;
+  opacity: 1;
+}
+
+.chakra__core {
+  filter: drop-shadow(0 0 5px currentColor);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: core 4.5s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.6s);
+}
+
+/* While practicing, every chakra breathes in a slow wave from the root up. */
+.body[data-mode="practice"] .chakra__halo {
+  animation: halo-wave 4s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.57s);
+}
+
+.body[data-mode="savasana"] .body__figure {
+  opacity: 0.75;
+}
+
+.body[data-mode="savasana"] .chakra__halo {
+  animation: halo-wave 8.5s ease-in-out infinite;
+  animation-delay: calc((6 - var(--i)) * 1.2s);
+}
+
+.body[data-mode]:not([data-mode="idle"]) .chakra[data-active="true"] .chakra__halo {
+  animation: none;
+  opacity: 1;
+}
+
+.body__label {
+  position: absolute;
+  left: calc(50% + 30px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-6px, -50%);
+  transition:
+    top 0.8s var(--ease),
+    opacity 0.35s var(--ease),
+    transform 0.5s var(--ease);
+}
+
+.body[data-active="true"] .body__label {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+.body__label-line {
+  width: 34px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--c));
+}
+
+.body__label-text {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 14px;
+  border-radius: 14px;
+  background: rgba(28, 28, 30, 0.72);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--hairline);
+  box-shadow: 0 10px 30px -10px color-mix(in oklab, var(--c) 60%, transparent);
+  white-space: nowrap;
+}
+
+.body__label-text strong {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--c);
+}
+
+.body__label-text span {
+  font-size: 12px;
+  color: var(--label-2);
+}
+
+@media (max-width: 480px) {
+  .body__label {
+    display: none;
+  }
+}
+
+/* ---------- Chakra detail card ---------- */
+
+.chakra-card {
+  width: min(100%, 460px);
+  min-height: 214px;
+  margin-top: 12px;
+  padding: 22px 24px;
+  border-radius: 26px;
+  background: var(--glass);
+  -webkit-backdrop-filter: saturate(180%) blur(30px);
+  backdrop-filter: saturate(180%) blur(30px);
+  border: 1px solid var(--hairline);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.chakra-card__inner {
+  animation: rise 0.5s var(--ease);
+}
+
+.chakra-card__top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chakra-card__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 14px var(--accent);
+}
+
+.chakra-card__num {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--label-3);
+}
+
+.chakra-card__name {
+  margin: 8px 0 0;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--accent);
+}
+
+.chakra-card__es {
+  margin: 2px 0 0;
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--label);
+}
+
+.chakra-card__essence {
+  margin: 8px 0 0;
+  font-size: 15px;
+  color: var(--label-2);
+}
+
+.chakra-card__facts {
+  margin: 16px 0 0;
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--hairline);
+}
+
+.chakra-card__facts dt {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--label-3);
+}
+
+.chakra-card__facts dd {
+  margin: 3px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .chakra-card__facts {
+    grid-template-columns: repeat(2, auto);
+    justify-content: start;
+    column-gap: 40px;
+  }
+}
+
+.chakra-card__hint {
+  margin: 0;
+  text-align: center;
+  font-size: 15px;
+  color: var(--label-3);
+}
+
+.chakra-dots {
+  display: flex;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.chakra-dots__dot {
+  width: 12px;
+  height: 12px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--c);
+  opacity: 0.35;
+  transition:
+    opacity 0.3s,
+    transform 0.4s var(--spring),
+    box-shadow 0.4s;
+}
+
+.chakra-dots__dot:hover,
+.chakra-dots__dot[data-active="true"] {
+  opacity: 1;
+  transform: scale(1.35);
+  box-shadow: 0 0 14px var(--c);
+}
+
+/* ---------- Savasana ---------- */
+
+.dial {
+  position: relative;
+  width: min(100%, 250px);
+  aspect-ratio: 1;
+  margin: 22px auto 4px;
+}
+
+.dial__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.dial__track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 6;
+}
+
+.dial__progress {
+  fill: none;
+  stroke-width: 6;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 8px rgba(140, 92, 240, 0.6));
+}
+
+.savasana[data-status="ready"] .dial__progress {
+  opacity: 0;
+}
+
+.dial__orb {
+  position: absolute;
+  inset: 20%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 38% 32%,
+    rgba(191, 90, 242, 0.6),
+    rgba(94, 92, 230, 0.28) 48%,
+    rgba(50, 173, 230, 0) 72%
+  );
+  filter: blur(8px);
+  opacity: 0.5;
+  transform: scale(0.85);
+  transition: opacity 1s var(--ease);
+  animation: breathe 10s ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+.savasana[data-status="running"] .dial__orb {
+  opacity: 1;
+  animation-play-state: running;
+}
+
+.dial__center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.dial__time {
+  font-size: 58px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.dial__cue {
+  max-width: 150px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.3;
+  color: var(--label-2);
+  animation: rise 0.9s var(--ease);
+}
+
+.savasana[data-status="done"] .dial__cue {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--label);
+}
+
+.savasana__hint {
+  margin: 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--label-3);
+}
+
+/* ---------- Keyframes ---------- */
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes core {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.25);
+  }
+}
+
+@keyframes halo-wave {
+  0%,
+  100% {
+    opacity: 0.05;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(0.82);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes eq {
+  from {
+    transform: scaleY(0.25);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes busy {
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
