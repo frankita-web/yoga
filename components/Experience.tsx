@@ -1,13 +1,20 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { CHAKRA_ARC, STAGE, WEEK_ARC, arcPath } from "@/lib/arc";
 import { CHAKRAS } from "@/lib/chakras";
+import { addListened, getSnapshot, summarize } from "@/lib/practiceStore";
+import { useToday } from "@/lib/usePractice";
+import { dayName, shortDate } from "@/lib/week";
 import AshtangaPlayer from "./AshtangaPlayer";
+import ChakraArc from "./ChakraArc";
 import ChakraBody, { type BodyMode } from "./ChakraBody";
 import SavasanaTimer from "./SavasanaTimer";
+import WeekTracker from "./WeekTracker";
 
 // Bottom-to-top order, as chakras are counted (1 = root).
 const ASCENDING = [...CHAKRAS].reverse();
+const LISTEN_TICK = 5;
 
 export default function Experience() {
   const [hovered, setHovered] = useState<string | null>(null);
@@ -16,6 +23,9 @@ export default function Experience() {
   const [resting, setResting] = useState(false);
   const [pauseAshtanga, setPauseAshtanga] = useState(0);
   const [pauseSavasana, setPauseSavasana] = useState(0);
+  const [toast, setToast] = useState<string | null>(null);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const today = useToday();
 
   const mode: BodyMode = resting ? "savasana" : practicing ? "practice" : "idle";
 
@@ -32,6 +42,21 @@ export default function Experience() {
   }, [mode]);
   const order = mode === "practice" ? ASCENDING : CHAKRAS;
   const ambient = mode === "idle" ? null : order[(beat.mode === mode ? beat.n : 0) % order.length].id;
+
+  // Listening to a class counts toward today's practice.
+  useEffect(() => {
+    if (!practicing || !today) return;
+    const t = setInterval(() => {
+      if (!addListened(today, LISTEN_TICK)) return;
+      const { count, goal } = summarize(getSnapshot(), today);
+      setToast(`Práctica registrada · ${count} de ${goal} esta semana`);
+      clearTimeout(toastTimer.current);
+      toastTimer.current = setTimeout(() => setToast(null), 5000);
+    }, LISTEN_TICK * 1000);
+    return () => clearInterval(t);
+  }, [practicing, today]);
+
+  useEffect(() => () => clearTimeout(toastTimer.current), []);
 
   const onPracticeChange = useCallback((playing: boolean) => {
     setPracticing(playing);
@@ -50,90 +75,62 @@ export default function Experience() {
   const number = active ? ASCENDING.indexOf(active) + 1 : null;
 
   return (
-    <div
-      className="experience"
-      data-mode={mode}
-      style={{ ["--accent" as string]: active?.color ?? "#5E5CE6" }}
-    >
-      <div className="aura" aria-hidden="true" data-on={active ? "true" : "false"} />
-
-      <header className="hero">
-        <span className="hero__eyebrow">Prana</span>
-        <h1 className="hero__title">
-          Siente cada <span className="hero__gradient">chakra.</span>
-        </h1>
-        <p className="hero__lede">Toca o pasa el cursor por el cuerpo. Dale play. Respira.</p>
+    <div className="app" data-mode={mode} style={{ ["--accent" as string]: active?.color ?? "#d9d9d6" }}>
+      <header className="topbar">
+        <span className="wordmark">Prana</span>
+        <span className="mono topbar__mid">Ashtanga · Chakras · Savasana</span>
+        <span className="mono">{today ? `${dayName(today)} ${shortDate(today)}` : ""}</span>
       </header>
 
       <main className="stage">
-        <div className="stage__player">
-          <AshtangaPlayer onPlayingChange={onPracticeChange} pauseSignal={pauseAshtanga} />
-        </div>
+        <svg className="stage__rails" viewBox={`0 0 ${STAGE.width} ${STAGE.height}`} aria-hidden="true">
+          <path d={arcPath(CHAKRA_ARC)} />
+          <path d={arcPath(WEEK_ARC)} />
+        </svg>
 
-        <div className="stage__body">
+        <p className="stage__title mono" aria-live="polite">
+          {active ? `Chakra ${number} de 7 · ${active.sanskrit}` : "Elige un chakra"}
+        </p>
+
+        <ChakraArc active={active} selected={selected} onHover={setHovered} onSelect={select} />
+
+        <div className="orbit">
+          <svg className="orbit__ring" viewBox="0 0 560 560" aria-hidden="true">
+            <g className="orbit__spin">
+              <circle cx="280" cy="280" r="272" className="orbit__dots" />
+              <circle cx="280" cy="8" r="6" className="orbit__bead" />
+              <circle cx="44.4" cy="416" r="6" className="orbit__bead" />
+              <circle cx="535.6" cy="187" r="6" className="orbit__bead" />
+            </g>
+          </svg>
+          <div className="orbit__sphere" />
           <ChakraBody active={active} mode={mode} onHover={setHovered} onSelect={select} />
-
-          <div className="chakra-card" data-empty={active ? "false" : "true"} aria-live="polite">
-            {active ? (
-              <div className="chakra-card__inner" key={active.id}>
-                <div className="chakra-card__top">
-                  <span className="chakra-card__dot" />
-                  <span className="chakra-card__num">Chakra {number} de 7</span>
-                </div>
-                <h3 className="chakra-card__name">{active.sanskrit}</h3>
-                <p className="chakra-card__es">{active.name}</p>
-                <p className="chakra-card__essence">{active.essence}</p>
-                <dl className="chakra-card__facts">
-                  <div>
-                    <dt>Ubicación</dt>
-                    <dd>{active.location}</dd>
-                  </div>
-                  <div>
-                    <dt>Elemento</dt>
-                    <dd>{active.element}</dd>
-                  </div>
-                  <div>
-                    <dt>Mantra</dt>
-                    <dd>{active.mantra}</dd>
-                  </div>
-                  <div>
-                    <dt>Pétalos</dt>
-                    <dd>{active.petals}</dd>
-                  </div>
-                </dl>
-              </div>
-            ) : (
-              <p className="chakra-card__hint">Pasa el cursor sobre un chakra para descubrirlo.</p>
-            )}
-          </div>
-
-          <nav className="chakra-dots" aria-label="Elegir chakra">
-            {ASCENDING.map((c, i) => (
-              <button
-                key={c.id}
-                className="chakra-dots__dot"
-                data-active={active?.id === c.id ? "true" : "false"}
-                style={{ ["--c" as string]: c.color }}
-                onClick={() => select(c.id)}
-                onMouseEnter={() => setHovered(c.id)}
-                onMouseLeave={() => setHovered(null)}
-                aria-label={`${i + 1}. ${c.sanskrit}`}
-                aria-pressed={selected === c.id}
-              />
-            ))}
-          </nav>
         </div>
 
-        <div className="stage__savasana">
-          <SavasanaTimer onRunningChange={onRestChange} pauseSignal={pauseSavasana} />
+        <div className="stage__detail">
+          {active ? (
+            <div key={active.id} className="stage__detail-inner">
+              <p className="stage__essence">{active.essence}</p>
+              <p className="mono stage__facts">
+                {active.location} · {active.element} · Mantra {active.mantra} · {active.petals} pétalos
+              </p>
+            </div>
+          ) : (
+            <p className="mono stage__facts">Siete centros de energía, de la raíz a la corona</p>
+          )}
         </div>
+
+        <AshtangaPlayer onPlayingChange={onPracticeChange} pauseSignal={pauseAshtanga} />
+        <SavasanaTimer onRunningChange={onRestChange} pauseSignal={pauseSavasana} />
+        <WeekTracker />
       </main>
 
-      <footer className="footer">
-        <p>
-          Clases de Ashtanga vía YouTube: R. Sharath Jois, Philippa Asher y Krista. Todo el crédito a sus
-          autores.
-        </p>
+      <div className="toast mono" data-show={toast ? "true" : "false"} role="status">
+        {toast}
+      </div>
+
+      <footer className="footer mono">
+        Clases vía YouTube: R. Sharath Jois, Philippa Asher y Krista · Tu registro se guarda en este navegador
       </footer>
     </div>
   );

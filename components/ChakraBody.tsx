@@ -63,7 +63,6 @@ export default function ChakraBody({ active, mode, onHover, onSelect }: Props) {
     clip: `clip-${uid}`,
     glow: `glow-${uid}`,
     spine: `spine-${uid}`,
-    rim: `rim-${uid}`,
     halo: `halo-${uid}`,
   };
   const glowColor = active?.color ?? "#ffffff";
@@ -78,9 +77,9 @@ export default function ChakraBody({ active, mode, onHover, onSelect }: Props) {
       >
         <defs>
           <linearGradient id={ids.fill} x1="0" y1="0" x2="0" y2="500" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stopColor="#3a3a3f" />
-            <stop offset="0.55" stopColor="#222226" />
-            <stop offset="1" stopColor="#161618" />
+            <stop offset="0" stopColor="#ffffff" />
+            <stop offset="0.6" stopColor="#f7f7f5" />
+            <stop offset="1" stopColor="#e9e9e6" />
           </linearGradient>
           <linearGradient id={ids.spine} x1="0" y1="40" x2="0" y2="378" gradientUnits="userSpaceOnUse">
             {CHAKRAS.map((c, i) => (
@@ -88,34 +87,23 @@ export default function ChakraBody({ active, mode, onHover, onSelect }: Props) {
             ))}
           </linearGradient>
           <radialGradient id={ids.glow}>
-            <stop offset="0" style={{ stopColor: glowColor, stopOpacity: 0.85 }} />
-            <stop offset="0.45" style={{ stopColor: glowColor, stopOpacity: 0.28 }} />
+            <stop offset="0" style={{ stopColor: glowColor, stopOpacity: 0.6 }} />
+            <stop offset="0.45" style={{ stopColor: glowColor, stopOpacity: 0.2 }} />
             <stop offset="1" style={{ stopColor: glowColor, stopOpacity: 0 }} />
           </radialGradient>
           {CHAKRAS.map((c) => (
             <radialGradient key={c.id} id={`${ids.halo}-${c.id}`}>
-              <stop offset="0" stopColor={c.color} stopOpacity="0.9" />
-              <stop offset="0.35" stopColor={c.color} stopOpacity="0.35" />
+              <stop offset="0" stopColor={c.color} stopOpacity="0.7" />
+              <stop offset="0.35" stopColor={c.color} stopOpacity="0.22" />
               <stop offset="1" stopColor={c.color} stopOpacity="0" />
             </radialGradient>
           ))}
           <clipPath id={ids.clip}>
             <Silhouette />
           </clipPath>
-          {/* Hairline rim light around the silhouette */}
-          <filter id={ids.rim} x="-10%" y="-10%" width="120%" height="120%">
-            <feMorphology in="SourceAlpha" operator="dilate" radius="1" result="grown" />
-            <feComposite in="grown" in2="SourceAlpha" operator="out" result="edge" />
-            <feFlood floodColor="#ffffff" floodOpacity="0.22" />
-            <feComposite in2="edge" operator="in" result="rim" />
-            <feMerge>
-              <feMergeNode in="SourceGraphic" />
-              <feMergeNode in="rim" />
-            </feMerge>
-          </filter>
         </defs>
 
-        <g className="body__figure" fill={`url(#${ids.fill})`} filter={`url(#${ids.rim})`}>
+        <g className="body__figure" fill={`url(#${ids.fill})`}>
           <Silhouette />
         </g>
 
@@ -162,8 +150,8 @@ export default function ChakraBody({ active, mode, onHover, onSelect }: Props) {
               <g className="chakra__scale">
                 <circle className="chakra__halo" r={46} fill={`url(#${ids.halo}-${c.id})`} />
                 <Petals count={c.petals} color={c.color} />
-                <circle className="chakra__ring" r={9.5} fill="none" stroke={c.color} strokeWidth={1.5} />
-                <circle className="chakra__core" r={4.5} fill={c.color} />
+                <circle className="chakra__ring" r={9.5} fill="#fff" stroke={c.color} strokeWidth={1.5} />
+                <circle className="chakra__core" r={5} fill={c.color} />
               </g>
               <circle r={22} fill="transparent" />
             </g>
@@ -181,9 +169,12 @@ export default function ChakraBody({ active, mode, onHover, onSelect }: Props) {
         }}
       >
         <span className="body__label-line" />
-        <span className="body__label-text">
-          <strong>{active?.sanskrit}</strong>
-          <span>{active?.name}</span>
+        <span className="body__label-pill">
+          <span className="body__label-avatar">{active?.mantra === "Silencio" ? "∞" : active?.mantra}</span>
+          <span className="body__label-text">
+            <strong>{active?.sanskrit}</strong>
+            <span>{active?.name}</span>
+          </span>
         </span>
       </div>
     </div>

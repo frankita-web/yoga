@@ -3,10 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { CLASSES, formatTime } from "@/lib/classes";
 import { loadYouTubeApi, type YTPlayer } from "@/lib/youtube";
-import { EqualizerIcon, PauseIcon, PlayIcon, SkipIcon, VolumeIcon } from "./icons";
+import { EqualizerIcon, ListIcon, PauseIcon, PlayIcon } from "./icons";
 
 const YT_PLAYING = 1;
 const YT_BUFFERING = 3;
+const RING = 2 * Math.PI * 24;
 
 type Props = {
   onPlayingChange: (playing: boolean) => void;
@@ -23,7 +24,7 @@ export default function AshtangaPlayer({ onPlayingChange, pauseSignal }: Props) 
   const [buffering, setBuffering] = useState(false);
   const [time, setTime] = useState(0);
   const [duration, setDuration] = useState(CLASSES[0].length);
-  const [volume, setVolume] = useState(90);
+  const [listOpen, setListOpen] = useState(false);
   const [error, setError] = useState(false);
 
   const onPlayingChangeRef = useRef(onPlayingChange);
@@ -55,7 +56,7 @@ export default function AshtangaPlayer({ onPlayingChange, pauseSignal }: Props) 
         },
         events: {
           onReady: (e) => {
-            e.target.setVolume(90);
+            e.target.setVolume(100);
             setReady(true);
           },
           onStateChange: (e) => {
@@ -114,49 +115,29 @@ export default function AshtangaPlayer({ onPlayingChange, pauseSignal }: Props) 
     p.loadVideoById(CLASSES[i].videoId);
   };
 
-  const skip = (delta: number) => {
-    const p = playerRef.current;
-    if (!p || !ready) return;
-    const next = Math.min(Math.max(0, p.getCurrentTime() + delta), duration);
-    p.seekTo(next, true);
-    setTime(next);
-  };
-
   const seek = (value: number) => {
     playerRef.current?.seekTo(value, true);
     setTime(value);
   };
 
-  const changeVolume = (value: number) => {
-    setVolume(value);
-    playerRef.current?.setVolume(value);
-  };
-
   const current = CLASSES[index];
-  const progress = duration > 0 ? (time / duration) * 100 : 0;
+  const progress = duration > 0 ? time / duration : 0;
 
   return (
-    <section className="card player" aria-labelledby="ashtanga-title">
-      <header className="card__header">
-        <span className="card__eyebrow">Clase guiada · audio</span>
-        <h2 id="ashtanga-title" className="card__title">Ashtanga</h2>
-        <p className="card__subtitle">Serie primaria contada en sánscrito. Solo play y respira.</p>
-      </header>
-
-      <div className="player__artwork" data-playing={playing ? "true" : "false"}>
-        <div ref={hostRef} className="player__frame" />
-        {!ready && <div className="player__loading">Cargando clase…</div>}
+    <section className="ashtanga" aria-label="Clase de Ashtanga" data-playing={playing ? "true" : "false"}>
+      <div className="ashtanga__tile">
+        <div ref={hostRef} className="ashtanga__frame" />
+        {!ready && <div className="ashtanga__loading mono">Cargando</div>}
+        <span className="badge badge--blue" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18">
+            <rect x="3" y="6.5" width="12" height="11" rx="2.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+            <path d="M15 10.5l5-3v9l-5-3z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+          </svg>
+        </span>
       </div>
 
-      <div className="player__now">
-        <div>
-          <div className="player__track">{current.title}</div>
-          <div className="player__teacher">{current.teacher}</div>
-        </div>
-        <EqualizerIcon playing={playing} />
-      </div>
-
-      <div className="scrubber">
+      <div className="ashtanga__scrub">
+        <span className="mono">{formatTime(time)}</span>
         <input
           type="range"
           min={0}
@@ -166,75 +147,76 @@ export default function AshtangaPlayer({ onPlayingChange, pauseSignal }: Props) 
           onChange={(e) => seek(Number(e.target.value))}
           disabled={!ready}
           aria-label="Progreso de la clase"
-          style={{ ["--p" as string]: `${progress}%` }}
+          style={{ ["--p" as string]: `${progress * 100}%` }}
         />
-        <div className="scrubber__times">
-          <span>{formatTime(time)}</span>
-          <span>−{formatTime(duration - time)}</span>
-        </div>
+        <span className="mono">{formatTime(duration)}</span>
       </div>
 
-      <div className="transport">
-        <button className="icon-btn" onClick={() => skip(-15)} disabled={!ready} aria-label="Retroceder 15 segundos">
-          <SkipIcon direction="back" size={26} />
-        </button>
+      <div className="pill ashtanga__pill">
         <button
-          className="play-btn"
+          className="pill__play"
           onClick={toggle}
           disabled={!ready}
           aria-label={playing ? "Pausar clase" : "Reproducir clase"}
           data-busy={buffering ? "true" : "false"}
         >
-          {playing ? <PauseIcon size={28} /> : <PlayIcon size={28} />}
+          <svg className="pill__ring" viewBox="0 0 52 52" aria-hidden="true">
+            <circle cx="26" cy="26" r="24" />
+            <circle cx="26" cy="26" r="24" strokeDasharray={RING} strokeDashoffset={RING * (1 - progress)} />
+          </svg>
+          {playing ? <PauseIcon size={20} /> : <PlayIcon size={20} />}
         </button>
-        <button className="icon-btn" onClick={() => skip(15)} disabled={!ready} aria-label="Adelantar 15 segundos">
-          <SkipIcon direction="forward" size={26} />
-        </button>
+        <span className="pill__text">
+          <strong>{current.title}</strong>
+          <span className="mono">{current.teacher}</span>
+        </span>
+        <span className="pill__tools">
+          <button
+            className="pill__tool"
+            onClick={() => setListOpen((o) => !o)}
+            aria-expanded={listOpen}
+            aria-label="Elegir clase"
+          >
+            <ListIcon />
+          </button>
+        </span>
       </div>
 
-      <label className="volume">
-        <VolumeIcon />
-        <input
-          type="range"
-          min={0}
-          max={100}
-          value={volume}
-          onChange={(e) => changeVolume(Number(e.target.value))}
-          aria-label="Volumen"
-          style={{ ["--p" as string]: `${volume}%` }}
-        />
-      </label>
+      {listOpen && (
+        <ol className="classes" aria-label="Clases">
+          {CLASSES.map((c, i) => (
+            <li key={c.videoId}>
+              <button
+                className="classes__item"
+                data-current={i === index ? "true" : "false"}
+                onClick={() => {
+                  select(i);
+                  setListOpen(false);
+                }}
+                disabled={!ready}
+              >
+                <span className="classes__num mono">
+                  {i === index && playing ? <EqualizerIcon playing /> : `0${i + 1}`}
+                </span>
+                <span className="classes__meta">
+                  <strong>{c.title}</strong>
+                  <span>{c.teacher}</span>
+                </span>
+                <span className="classes__len mono">{formatTime(c.length)}</span>
+              </button>
+            </li>
+          ))}
+        </ol>
+      )}
 
       {error && (
-        <p className="player__error">
+        <p className="ashtanga__error">
           Esta clase no se pudo cargar aquí.{" "}
           <a href={`https://www.youtube.com/watch?v=${current.videoId}`} target="_blank" rel="noreferrer">
             Ábrela en YouTube
           </a>
         </p>
       )}
-
-      <ol className="tracklist">
-        {CLASSES.map((c, i) => (
-          <li key={c.videoId}>
-            <button
-              className="tracklist__item"
-              data-current={i === index ? "true" : "false"}
-              onClick={() => select(i)}
-              disabled={!ready}
-            >
-              <span className="tracklist__num">
-                {i === index && playing ? <EqualizerIcon playing /> : i + 1}
-              </span>
-              <span className="tracklist__meta">
-                <span className="tracklist__title">{c.title}</span>
-                <span className="tracklist__teacher">{c.teacher}</span>
-              </span>
-              <span className="tracklist__len">{formatTime(c.length)}</span>
-            </button>
-          </li>
-        ))}
-      </ol>
     </section>
   );
 }

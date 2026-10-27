@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -7,20 +7,25 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+const mono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
   title: "Prana · Chakras, Ashtanga y Savasana",
   description:
-    "Descubre los siete chakras, practica la serie primaria de Ashtanga guiada en audio y termina con un minuto de Savasana.",
+    "Descubre los siete chakras, practica Ashtanga guiado en audio, termina con un minuto de Savasana y lleva el registro de tu semana.",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#000000",
-  colorScheme: "dark",
+  themeColor: "#f1f1ef",
+  colorScheme: "light",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="es" className={`${inter.variable} antialiased`}>
+    <html lang="es" className={`${inter.variable} ${mono.variable} antialiased`}>
       <body>{children}</body>
     </html>
   );

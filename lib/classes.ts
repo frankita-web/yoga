@@ -10,19 +10,19 @@ export type YogaClass = {
 export const CLASSES: YogaClass[] = [
   {
     videoId: "JWDse8F67GQ",
-    title: "Led Primary · solo audio",
+    title: "Led Primary · audio",
     teacher: "R. Sharath Jois",
     length: 5233,
   },
   {
     videoId: "0KMbO52LLqk",
-    title: "Primary Series · conteo pausado",
+    title: "Primary · conteo lento",
     teacher: "Conteo de Sharath Jois",
     length: 5381,
   },
   {
     videoId: "xrcmlIMXUC4",
-    title: "Led Primary en sánscrito",
+    title: "Led Primary sánscrito",
     teacher: "Philippa Asher",
     length: 5380,
   },

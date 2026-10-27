@@ -6,7 +6,7 @@ import { formatTime } from "@/lib/classes";
 import { PauseIcon, PlayIcon, ResetIcon } from "./icons";
 
 const DURATION = 60;
-const RADIUS = 92;
+const RADIUS = 104;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 const CUES: [number, string][] = [
@@ -109,65 +109,45 @@ export default function SavasanaTimer({ onRunningChange, pauseSignal }: Props) {
         : [...CUES].reverse().find(([t]) => elapsed >= t)![1];
 
   return (
-    <section className="card savasana" data-status={status} aria-labelledby="savasana-title">
-      <header className="card__header">
-        <span className="card__eyebrow">Relajación final</span>
-        <h2 id="savasana-title" className="card__title">Savasana</h2>
-        <p className="card__subtitle">Dale play, acuéstate y cierra los ojos. Un cuenco te avisa al terminar.</p>
-      </header>
-
-      <div className="dial">
-        <svg viewBox="0 0 220 220" className="dial__svg" aria-hidden="true">
-          <defs>
-            <linearGradient id="savasana-ring" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stopColor="#BF5AF2" />
-              <stop offset="0.5" stopColor="#5E5CE6" />
-              <stop offset="1" stopColor="#32ADE6" />
-            </linearGradient>
-          </defs>
-          <circle cx="110" cy="110" r={RADIUS} className="dial__track" />
+    <section className="savasana" data-status={status} aria-label="Savasana de un minuto">
+      <div className="savasana__circle">
+        <svg viewBox="0 0 220 220" className="savasana__ring" aria-hidden="true">
+          <circle cx="110" cy="110" r={RADIUS} className="savasana__track" />
           <circle
             cx="110"
             cy="110"
             r={RADIUS}
-            className="dial__progress"
-            stroke="url(#savasana-ring)"
+            className="savasana__progress"
             strokeDasharray={CIRCUMFERENCE}
             strokeDashoffset={CIRCUMFERENCE * (1 - progress)}
             transform="rotate(-90 110 110)"
           />
         </svg>
-        <div className="dial__orb" />
-        <div className="dial__center">
-          <span className="dial__time" aria-live="off">
-            {formatTime(shown)}
-          </span>
-          <span className="dial__cue" key={cue} aria-live="polite">
+        <div className="savasana__orb" />
+        <div className="savasana__center">
+          <span className="savasana__time">{formatTime(shown)}</span>
+          <span className="savasana__cue" key={cue} aria-live="polite">
             {cue}
           </span>
         </div>
-      </div>
-
-      <div className="transport">
         <button
-          className="icon-btn"
-          onClick={reset}
-          disabled={status === "ready"}
-          aria-label="Reiniciar savasana"
-        >
-          <ResetIcon size={22} />
-        </button>
-        <button
-          className="play-btn play-btn--calm"
+          className="badge badge--violet badge--button"
           onClick={toggle}
           aria-label={status === "running" ? "Pausar savasana" : "Comenzar savasana"}
         >
-          {status === "running" ? <PauseIcon size={28} /> : <PlayIcon size={28} />}
+          {status === "running" ? <PauseIcon size={20} /> : <PlayIcon size={20} />}
         </button>
-        <span className="icon-btn icon-btn--ghost" aria-hidden="true" />
       </div>
 
-      <p className="savasana__hint">Mejor con audífonos · 1 minuto</p>
+      <div className="pill savasana__pill">
+        <span className="pill__text">
+          <strong>Savasana · 1 minuto</strong>
+          <span className="mono">Cierra los ojos</span>
+        </span>
+        <button className="pill__tool" onClick={reset} disabled={status === "ready"} aria-label="Reiniciar savasana">
+          <ResetIcon size={18} />
+        </button>
+      </div>
     </section>
   );
 }

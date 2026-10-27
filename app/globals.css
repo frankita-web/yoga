@@ -3,31 +3,34 @@
 @property --accent {
   syntax: "<color>";
   inherits: true;
-  initial-value: #5e5ce6;
+  initial-value: #d9d9d6;
 }
 
 :root {
-  --bg: #000;
-  --label: #f5f5f7;
-  --label-2: rgba(235, 235, 245, 0.62);
-  --label-3: rgba(235, 235, 245, 0.34);
-  --hairline: rgba(255, 255, 255, 0.08);
-  --glass: rgba(24, 24, 27, 0.58);
+  --bg: #f1f1ef;
+  --ink: #141414;
+  --ink-2: #5e5e5a;
+  --ink-3: #9a9a95;
+  --line: rgba(20, 20, 20, 0.12);
+  --pill: #e6e6e3;
+  --pastel-blue: #e3eafb;
+  --pastel-violet: #ece6fb;
+  --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", var(--font-inter), system-ui, sans-serif;
+  --mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, monospace;
   --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 html {
   background: var(--bg);
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
   margin: 0;
   background: var(--bg);
-  color: var(--label);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", var(--font-inter), system-ui,
-    sans-serif;
+  color: var(--ink);
+  font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
   letter-spacing: -0.01em;
 }
@@ -42,494 +45,226 @@ button:disabled {
   cursor: default;
 }
 
-/* ---------- Page ---------- */
+:where(button, [role="button"], input):focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 3px;
+}
 
-.experience {
+.mono {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+/* ---------- Shell ---------- */
+
+.app {
   position: relative;
   min-height: 100vh;
   overflow-x: clip;
   transition: --accent 0.9s var(--ease);
 }
 
-.aura {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(42% 46% at 50% 52%, color-mix(in oklab, var(--accent) 30%, transparent), transparent 72%),
-    radial-gradient(70% 40% at 50% 110%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 70%);
-  opacity: 0.35;
-  transition: opacity 1s var(--ease);
-}
-
-.aura[data-on="true"] {
-  opacity: 1;
-}
-
-.hero {
-  position: relative;
-  text-align: center;
-  padding: 72px 24px 0;
-  transition: opacity 1.6s var(--ease);
-}
-
-.hero__eyebrow {
-  display: inline-block;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--label-2);
-  margin-bottom: 14px;
-}
-
-.hero__title {
-  margin: 0;
-  font-size: clamp(44px, 7vw, 88px);
-  font-weight: 700;
-  line-height: 1.02;
-  letter-spacing: -0.04em;
-}
-
-.hero__gradient {
-  background: linear-gradient(90deg, #ff453a, #ff9f0a, #ffd60a, #30d158, #32ade6, #5e5ce6, #bf5af2);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.hero__lede {
-  margin: 18px auto 0;
-  font-size: clamp(17px, 1.6vw, 21px);
-  color: var(--label-2);
-  font-weight: 500;
-}
-
-.stage {
-  position: relative;
-  max-width: 1380px;
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 36px 28px 40px;
-  display: grid;
-  grid-template-columns: minmax(300px, 360px) minmax(0, 1fr) minmax(300px, 360px);
-  grid-template-areas: "player body savasana";
-  gap: 32px;
-  align-items: start;
+  padding: 22px 24px 0;
 }
 
-.stage__player {
-  grid-area: player;
-  transition: opacity 1.6s var(--ease);
-}
-
-.stage__body {
-  grid-area: body;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.stage__savasana {
-  grid-area: savasana;
-}
-
-.experience[data-mode="savasana"] .hero,
-.experience[data-mode="savasana"] .stage__player {
-  opacity: 0.3;
-}
-
-@media (max-width: 1120px) {
-  .stage {
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-      "body body"
-      "player savasana";
-  }
-}
-
-@media (max-width: 720px) {
-  .hero {
-    padding-top: 48px;
-  }
-  .stage {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "body"
-      "player"
-      "savasana";
-    padding: 24px 16px 32px;
-    gap: 24px;
-  }
-}
-
-.footer {
-  position: relative;
-  text-align: center;
-  padding: 16px 24px 48px;
-  font-size: 12px;
-  color: var(--label-3);
-}
-
-/* ---------- Cards ---------- */
-
-.card {
-  position: relative;
-  background: var(--glass);
-  -webkit-backdrop-filter: saturate(180%) blur(30px);
-  backdrop-filter: saturate(180%) blur(30px);
-  border: 1px solid var(--hairline);
-  border-radius: 30px;
-  padding: 26px;
-  box-shadow:
-    0 40px 80px -40px rgba(0, 0, 0, 0.9),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-}
-
-.card__eyebrow {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--label-3);
-}
-
-.card__title {
-  margin: 6px 0 0;
-  font-size: 32px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-}
-
-.card__subtitle {
-  margin: 6px 0 0;
-  font-size: 15px;
-  line-height: 1.4;
-  color: var(--label-2);
-}
-
-/* ---------- Transport controls ---------- */
-
-.transport {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 28px;
-  margin: 14px 0 18px;
-}
-
-.play-btn {
-  width: 68px;
-  height: 68px;
-  border-radius: 50%;
-  border: 0;
-  display: grid;
-  place-items: center;
-  background: var(--label);
-  color: #000;
-  box-shadow: 0 10px 30px -8px rgba(255, 255, 255, 0.25);
-  transition:
-    transform 0.4s var(--spring),
-    box-shadow 0.4s var(--ease),
-    opacity 0.3s;
-}
-
-.play-btn:hover:not(:disabled) {
-  transform: scale(1.06);
-}
-
-.play-btn:active:not(:disabled) {
-  transform: scale(0.94);
-}
-
-.play-btn:disabled {
-  opacity: 0.4;
-}
-
-.play-btn[data-busy="true"] {
-  animation: busy 1.2s ease-in-out infinite;
-}
-
-.play-btn--calm {
-  background: linear-gradient(135deg, #bf5af2, #5e5ce6 60%, #32ade6);
-  color: #fff;
-  box-shadow: 0 14px 40px -10px rgba(140, 92, 240, 0.7);
-}
-
-.icon-btn {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  border: 0;
-  background: transparent;
-  color: var(--label-2);
-  display: grid;
-  place-items: center;
-  transition:
-    background 0.25s,
-    color 0.25s,
-    transform 0.4s var(--spring);
-}
-
-.icon-btn:hover:not(:disabled) {
-  color: var(--label);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.icon-btn:active:not(:disabled) {
-  transform: scale(0.9);
-}
-
-.icon-btn:disabled {
-  opacity: 0.3;
-}
-
-.icon-btn--ghost {
-  visibility: hidden;
-}
-
-:where(button, [role="button"], input):focus-visible {
-  outline: 2px solid color-mix(in oklab, var(--accent) 80%, white);
-  outline-offset: 3px;
-}
-
-/* ---------- Range inputs ---------- */
-
-.scrubber input,
-.volume input {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  height: 6px;
-  border-radius: 999px;
-  background: linear-gradient(to right, var(--label) var(--p), rgba(255, 255, 255, 0.16) var(--p));
-  cursor: pointer;
-  transition: height 0.2s var(--ease);
-}
-
-.scrubber input:hover {
-  height: 8px;
-}
-
-.scrubber input::-webkit-slider-thumb,
-.volume input::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
-.scrubber input::-moz-range-thumb,
-.volume input::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
-  border: 0;
-  border-radius: 50%;
-  background: #fff;
-  opacity: 0;
-}
-
-.scrubber input:hover::-webkit-slider-thumb,
-.volume input:hover::-webkit-slider-thumb,
-.scrubber input:focus-visible::-webkit-slider-thumb {
-  opacity: 1;
-}
-
-.scrubber input:hover::-moz-range-thumb,
-.volume input:hover::-moz-range-thumb {
-  opacity: 1;
-}
-
-.scrubber__times {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 8px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--label-3);
-  font-variant-numeric: tabular-nums;
-}
-
-.volume {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--label-3);
-  padding: 0 4px;
-}
-
-.volume input {
-  height: 4px;
-}
-
-/* ---------- Ashtanga player ---------- */
-
-.player__artwork {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  margin: 22px 0 18px;
-  border-radius: 18px;
-  overflow: hidden;
-  background: #111;
-  transform: scale(0.94);
-  box-shadow: 0 20px 40px -24px rgba(0, 0, 0, 0.9);
-  transition:
-    transform 0.7s var(--spring),
-    box-shadow 0.7s var(--ease);
-}
-
-.player__artwork[data-playing="true"] {
-  transform: scale(1);
-  box-shadow: 0 28px 60px -20px color-mix(in oklab, var(--accent) 55%, transparent);
-}
-
-.player__frame,
-.player__frame iframe {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
-
-.player__loading {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-size: 13px;
-  color: var(--label-3);
-}
-
-.player__now {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-
-.player__track {
+.wordmark {
   font-size: 17px;
   font-weight: 600;
   letter-spacing: -0.02em;
 }
 
-.player__teacher {
-  font-size: 15px;
-  color: var(--label-2);
+.footer {
+  text-align: center;
+  padding: 24px 24px 40px;
+  font-size: 10px;
+  color: var(--ink-3);
 }
 
-.player__error {
-  margin: 14px 0 0;
-  font-size: 13px;
-  color: #ff9f0a;
+.toast {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  z-index: 50;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -12px);
+  transition:
+    opacity 0.4s var(--ease),
+    transform 0.5s var(--spring);
 }
 
-.player__error a {
-  text-decoration: underline;
+.toast[data-show="true"] {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 
-.eq {
-  display: inline-flex;
-  align-items: flex-end;
-  gap: 2px;
-  height: 14px;
+/* ---------- Stage: desktop composition (1200 × 720) ---------- */
+
+.stage {
+  position: relative;
+  width: 1200px;
+  height: 730px;
+  margin: 0 auto;
 }
 
-.eq i {
-  width: 3px;
-  height: 100%;
-  border-radius: 2px;
-  background: var(--label);
-  transform-origin: bottom;
-  animation: eq 0.9s ease-in-out infinite alternate;
+.stage__rails {
+  position: absolute;
+  inset: 0;
+  width: 1200px;
+  height: 720px;
+  pointer-events: none;
 }
 
-.eq i:nth-child(2) {
-  animation-delay: -0.3s;
+.stage__rails path {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1;
 }
 
-.eq i:nth-child(3) {
-  animation-delay: -0.6s;
-}
-
-.eq[data-playing="false"] i {
-  animation: none;
-  transform: scaleY(0.3);
-  opacity: 0.5;
-}
-
-.tracklist {
-  list-style: none;
-  margin: 20px 0 0;
-  padding: 14px 0 0;
-  border-top: 1px solid var(--hairline);
-}
-
-.tracklist__item {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 26px 1fr auto;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 10px;
-  border: 0;
-  border-radius: 14px;
-  background: transparent;
-  text-align: left;
-  transition: background 0.2s;
-}
-
-.tracklist__item:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.tracklist__item[data-current="true"] {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.tracklist__num {
-  display: grid;
-  place-items: center;
-  font-size: 14px;
-  color: var(--label-3);
-  font-variant-numeric: tabular-nums;
-}
-
-.tracklist__meta {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.tracklist__title {
-  font-size: 15px;
+.stage__title {
+  position: absolute;
+  top: 26px;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
   font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: var(--ink);
 }
 
-.tracklist__teacher {
-  font-size: 13px;
-  color: var(--label-2);
+.stage__detail {
+  position: absolute;
+  top: 652px;
+  left: 330px;
+  width: 540px;
+  text-align: center;
 }
 
-.tracklist__len {
+.stage__detail-inner {
+  animation: rise 0.5s var(--ease);
+}
+
+.stage__essence {
+  margin: 0 0 6px;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.stage__facts {
+  margin: 0;
+}
+
+.rail-head {
+  position: absolute;
+  top: 56px;
+  width: 230px;
+}
+
+.rail-head p {
+  margin: 6px 0 0;
   font-size: 13px;
-  color: var(--label-3);
-  font-variant-numeric: tabular-nums;
+  line-height: 1.4;
+  color: var(--ink-2);
+}
+
+.rail-head--left {
+  left: 24px;
+  width: 190px;
+}
+
+.rail-head--right {
+  left: 980px;
+  width: 210px;
+}
+
+/* ---------- Orbit + sphere ---------- */
+
+.orbit {
+  position: absolute;
+  left: 320px;
+  top: 80px;
+  width: 560px;
+  height: 560px;
+}
+
+.orbit__ring {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+
+.orbit__spin {
+  transform-origin: 280px 280px;
+  animation: spin 160s linear infinite;
+}
+
+.app[data-mode="practice"] .orbit__spin {
+  animation-duration: 40s;
+}
+
+.orbit__dots {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-dasharray: 0 13;
+  opacity: 0.55;
+}
+
+.orbit__bead {
+  fill: var(--ink);
+}
+
+.orbit__sphere {
+  position: absolute;
+  inset: 44px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 36% 28%,
+    rgba(255, 255, 255, 0.98),
+    rgba(255, 255, 255, 0.6) 42%,
+    rgba(226, 227, 223, 0.7) 76%,
+    rgba(214, 215, 211, 0.75)
+  );
+  box-shadow:
+    inset -24px -36px 70px rgba(0, 0, 0, 0.05),
+    0 50px 90px -50px rgba(0, 0, 0, 0.25);
+}
+
+.orbit__sphere::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at 50% 55%, color-mix(in oklab, var(--accent) 30%, transparent), transparent 65%);
+  opacity: 0.8;
 }
 
 /* ---------- Body & chakras ---------- */
 
+/* Positioned without transform so the floating label can rise above the
+   Ashtanga and Savasana tiles (a transform would trap its z-index). */
 .body {
-  position: relative;
-  width: min(100%, 440px);
+  position: absolute;
+  left: 20.55%;
+  top: 13.2%;
+  width: 58.9%;
   aspect-ratio: 400 / 500;
 }
 
@@ -540,6 +275,8 @@ button:disabled {
 }
 
 .body__figure {
+  filter: drop-shadow(0 0 0.6px rgba(0, 0, 0, 0.22)) drop-shadow(0 18px 22px rgba(0, 0, 0, 0.12))
+    drop-shadow(0 2px 3px rgba(0, 0, 0, 0.06));
   transition: opacity 1.5s var(--ease);
 }
 
@@ -555,7 +292,7 @@ button:disabled {
 }
 
 .body__spine {
-  opacity: 0.2;
+  opacity: 0.25;
   transition: opacity 0.6s var(--ease);
 }
 
@@ -596,41 +333,27 @@ button:disabled {
 }
 
 .chakra[data-active="true"] .chakra__petals {
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
 .chakra__ring {
-  opacity: 0.5;
-  transition:
-    opacity 0.4s,
-    stroke-width 0.3s;
-}
-
-.chakra[data-active="true"] .chakra__ring {
-  opacity: 1;
+  transition: stroke-width 0.3s;
 }
 
 .chakra:focus-visible .chakra__ring {
   stroke-width: 3;
-  opacity: 1;
 }
 
 .chakra__core {
-  filter: drop-shadow(0 0 5px currentColor);
   transform-box: fill-box;
   transform-origin: center;
   animation: core 4.5s ease-in-out infinite;
   animation-delay: calc(var(--i) * -0.6s);
 }
 
-/* While practicing, every chakra breathes in a slow wave from the root up. */
 .body[data-mode="practice"] .chakra__halo {
   animation: halo-wave 4s ease-in-out infinite;
   animation-delay: calc(var(--i) * 0.57s);
-}
-
-.body[data-mode="savasana"] .body__figure {
-  opacity: 0.75;
 }
 
 .body[data-mode="savasana"] .chakra__halo {
@@ -638,17 +361,17 @@ button:disabled {
   animation-delay: calc((6 - var(--i)) * 1.2s);
 }
 
-.body[data-mode]:not([data-mode="idle"]) .chakra[data-active="true"] .chakra__halo {
+.body:not([data-mode="idle"]) .chakra[data-active="true"] .chakra__halo {
   animation: none;
   opacity: 1;
 }
 
 .body__label {
   position: absolute;
-  left: calc(50% + 30px);
+  z-index: 30;
+  left: calc(50% + 26px);
   display: flex;
   align-items: center;
-  gap: 8px;
   pointer-events: none;
   opacity: 0;
   transform: translate(-6px, -50%);
@@ -664,229 +387,511 @@ button:disabled {
 }
 
 .body__label-line {
-  width: 34px;
+  width: 30px;
   height: 1px;
-  background: linear-gradient(to right, transparent, var(--c));
+  background: var(--ink);
+  opacity: 0.3;
+}
+
+.body__label-pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 20px 7px 7px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--c) 16%, #fff);
+  box-shadow: 0 14px 30px -18px rgba(0, 0, 0, 0.35);
+  white-space: nowrap;
+}
+
+.body__label-avatar {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--c);
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .body__label-text {
   display: flex;
   flex-direction: column;
-  padding: 8px 14px;
-  border-radius: 14px;
-  background: rgba(28, 28, 30, 0.72);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid var(--hairline);
-  box-shadow: 0 10px 30px -10px color-mix(in oklab, var(--c) 60%, transparent);
-  white-space: nowrap;
 }
 
 .body__label-text strong {
   font-size: 15px;
   font-weight: 600;
-  color: var(--c);
 }
 
 .body__label-text span {
   font-size: 12px;
-  color: var(--label-2);
+  color: var(--ink-2);
 }
 
-@media (max-width: 480px) {
-  .body__label {
-    display: none;
-  }
+/* ---------- Left rail: chakras ---------- */
+
+.chakra-arc__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-/* ---------- Chakra detail card ---------- */
-
-.chakra-card {
-  width: min(100%, 460px);
-  min-height: 214px;
-  margin-top: 12px;
-  padding: 22px 24px;
-  border-radius: 26px;
-  background: var(--glass);
-  -webkit-backdrop-filter: saturate(180%) blur(30px);
-  backdrop-filter: saturate(180%) blur(30px);
-  border: 1px solid var(--hairline);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.chakra-arc__item {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  transform: translate(calc(-100% + 9px), -50%);
 }
 
-.chakra-card__inner {
-  animation: rise 0.5s var(--ease);
-}
-
-.chakra-card__top {
+.chakra-arc__btn {
   display: flex;
   align-items: center;
-  gap: 8px;
-}
-
-.chakra-card__dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 14px var(--accent);
-}
-
-.chakra-card__num {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--label-3);
-}
-
-.chakra-card__name {
-  margin: 8px 0 0;
-  font-size: 34px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.05;
-  color: var(--accent);
-}
-
-.chakra-card__es {
-  margin: 2px 0 0;
-  font-size: 17px;
-  font-weight: 500;
-  color: var(--label);
-}
-
-.chakra-card__essence {
-  margin: 8px 0 0;
-  font-size: 15px;
-  color: var(--label-2);
-}
-
-.chakra-card__facts {
-  margin: 16px 0 0;
-  display: grid;
-  grid-template-columns: repeat(4, auto);
-  justify-content: space-between;
-  gap: 12px;
-  padding-top: 14px;
-  border-top: 1px solid var(--hairline);
-}
-
-.chakra-card__facts dt {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--label-3);
-}
-
-.chakra-card__facts dd {
-  margin: 3px 0 0;
-  font-size: 15px;
-  font-weight: 600;
-}
-
-@media (max-width: 480px) {
-  .chakra-card__facts {
-    grid-template-columns: repeat(2, auto);
-    justify-content: start;
-    column-gap: 40px;
-  }
-}
-
-.chakra-card__hint {
-  margin: 0;
-  text-align: center;
-  font-size: 15px;
-  color: var(--label-3);
-}
-
-.chakra-dots {
-  display: flex;
   gap: 14px;
-  margin-top: 20px;
+  padding: 4px 0 4px 12px;
+  border: 0;
+  background: none;
+  text-align: right;
 }
 
-.chakra-dots__dot {
-  width: 12px;
-  height: 12px;
-  padding: 0;
-  border: 0;
+.chakra-arc__label {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.5s var(--spring);
+}
+
+.chakra-arc__label strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.chakra-arc__label span {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.chakra-arc__dot {
+  position: relative;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: var(--c);
-  opacity: 0.35;
+  box-shadow:
+    0 0 0 3px var(--bg),
+    0 0 0 4px var(--line);
   transition:
-    opacity 0.3s,
-    transform 0.4s var(--spring),
+    transform 0.5s var(--spring),
     box-shadow 0.4s;
 }
 
-.chakra-dots__dot:hover,
-.chakra-dots__dot[data-active="true"] {
-  opacity: 1;
-  transform: scale(1.35);
-  box-shadow: 0 0 14px var(--c);
+.chakra-arc__btn:hover .chakra-arc__dot,
+.chakra-arc__btn[data-active="true"] .chakra-arc__dot {
+  transform: scale(1.4);
+  box-shadow:
+    0 0 0 3px var(--bg),
+    0 0 0 4px var(--c),
+    0 0 18px var(--c);
+}
+
+.chakra-arc__btn[data-active="true"] .chakra-arc__label {
+  transform: translateX(-6px);
+}
+
+.chakra-arc__btn[data-active="true"] strong {
+  font-weight: 700;
+}
+
+/* ---------- Pills & badges (shared) ---------- */
+
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 10px 7px 7px;
+  border-radius: 999px;
+  background: var(--pill);
+}
+
+.pill__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.pill__text strong {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pill__text .mono {
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pill__play {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  transition: transform 0.4s var(--spring);
+}
+
+.pill__play:hover:not(:disabled) {
+  transform: scale(1.06);
+}
+
+.pill__play:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.pill__play:disabled {
+  opacity: 0.4;
+}
+
+.pill__play[data-busy="true"] {
+  animation: busy 1.2s ease-in-out infinite;
+}
+
+.pill__ring {
+  position: absolute;
+  inset: 0;
+  transform: rotate(-90deg);
+}
+
+.pill__ring circle {
+  fill: none;
+  stroke-width: 2;
+  stroke: rgba(255, 255, 255, 0.18);
+}
+
+.pill__ring circle + circle {
+  stroke: #fff;
+  stroke-linecap: round;
+}
+
+.pill__tools {
+  display: flex;
+}
+
+.pill__tool {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink-2);
+  transition: background 0.2s;
+}
+
+.pill__tool:hover:not(:disabled),
+.pill__tool[aria-expanded="true"] {
+  background: rgba(0, 0, 0, 0.07);
+  color: var(--ink);
+}
+
+.pill__tool:disabled {
+  opacity: 0.35;
+}
+
+.badge {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border: 0;
+  border-radius: 50%;
+  color: var(--ink);
+  box-shadow: 0 10px 24px -14px rgba(0, 0, 0, 0.4);
+}
+
+.badge--blue {
+  right: -18px;
+  bottom: -18px;
+  background: var(--pastel-blue);
+}
+
+.badge--violet {
+  right: -4px;
+  bottom: 0;
+  width: 60px;
+  height: 60px;
+  background: var(--pastel-violet);
+}
+
+.badge--button {
+  transition: transform 0.4s var(--spring);
+}
+
+.badge--button:hover {
+  transform: scale(1.08);
+}
+
+.badge--button:active {
+  transform: scale(0.94);
+}
+
+/* ---------- Ashtanga ---------- */
+
+.ashtanga {
+  position: absolute;
+  left: 226px;
+  top: 142px;
+  width: 282px;
+  z-index: 10;
+}
+
+.ashtanga__tile {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin-left: 10px;
+  border-radius: 32px;
+  background: #dcdcd8;
+  box-shadow: 0 24px 40px -26px rgba(0, 0, 0, 0.45);
+  transition: transform 0.7s var(--spring);
+}
+
+.ashtanga[data-playing="true"] .ashtanga__tile {
+  transform: scale(1.03);
+}
+
+.ashtanga__frame {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.ashtanga__frame iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.ashtanga__loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.ashtanga__scrub {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 200px;
+  margin: 14px 0 10px 10px;
+}
+
+.ashtanga__scrub .mono {
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ashtanga__scrub input {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1;
+  min-width: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(to right, var(--ink) var(--p), rgba(0, 0, 0, 0.14) var(--p));
+  cursor: pointer;
+}
+
+.ashtanga__scrub input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.ashtanga__scrub input::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.ashtanga__error {
+  margin: 10px 0 0 10px;
+  font-size: 12px;
+  color: #b45309;
+}
+
+.ashtanga__error a {
+  text-decoration: underline;
+}
+
+.classes {
+  position: absolute;
+  left: 0;
+  right: -20px;
+  top: calc(100% + 8px);
+  z-index: 40;
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.3);
+  animation: rise 0.35s var(--ease);
+}
+
+.classes__item {
+  display: grid;
+  grid-template-columns: 26px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 16px;
+  background: none;
+  text-align: left;
+}
+
+.classes__item:hover:not(:disabled),
+.classes__item[data-current="true"] {
+  background: var(--bg);
+}
+
+.classes__meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.classes__meta strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.classes__meta span {
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+.classes__num,
+.classes__len {
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.eq {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+}
+
+.eq i {
+  width: 2px;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--ink);
+  transform-origin: bottom;
+  animation: eq 0.9s ease-in-out infinite alternate;
+}
+
+.eq i:nth-child(2) {
+  animation-delay: -0.3s;
+}
+
+.eq i:nth-child(3) {
+  animation-delay: -0.6s;
 }
 
 /* ---------- Savasana ---------- */
 
-.dial {
-  position: relative;
-  width: min(100%, 250px);
-  aspect-ratio: 1;
-  margin: 22px auto 4px;
-}
-
-.dial__svg {
+.savasana {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  left: 743px;
+  top: 366px;
+  width: 232px;
+  z-index: 10;
 }
 
-.dial__track {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.08);
-  stroke-width: 6;
+.savasana__circle {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin-left: 30px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 30%, #fff, #f1edfd 55%, #e3dcf7);
+  box-shadow: 0 30px 50px -30px rgba(80, 60, 160, 0.45);
 }
 
-.dial__progress {
+.savasana__ring {
+  position: absolute;
+  inset: -10px;
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+}
+
+.savasana__track {
   fill: none;
-  stroke-width: 6;
+  stroke: rgba(0, 0, 0, 0.07);
+  stroke-width: 2;
+}
+
+.savasana__progress {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
   stroke-linecap: round;
-  filter: drop-shadow(0 0 8px rgba(140, 92, 240, 0.6));
 }
 
-.savasana[data-status="ready"] .dial__progress {
+.savasana[data-status="ready"] .savasana__progress {
   opacity: 0;
 }
 
-.dial__orb {
+.savasana__orb {
   position: absolute;
-  inset: 20%;
+  inset: 18%;
   border-radius: 50%;
-  background: radial-gradient(
-    circle at 38% 32%,
-    rgba(191, 90, 242, 0.6),
-    rgba(94, 92, 230, 0.28) 48%,
-    rgba(50, 173, 230, 0) 72%
-  );
-  filter: blur(8px);
-  opacity: 0.5;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.45), rgba(167, 139, 250, 0) 70%);
+  opacity: 0;
   transform: scale(0.85);
   transition: opacity 1s var(--ease);
   animation: breathe 10s ease-in-out infinite;
   animation-play-state: paused;
 }
 
-.savasana[data-status="running"] .dial__orb {
+.savasana[data-status="running"] .savasana__orb {
   opacity: 1;
   animation-play-state: running;
 }
 
-.dial__center {
+.savasana__center {
   position: absolute;
   inset: 0;
   display: flex;
@@ -896,34 +901,433 @@ button:disabled {
   gap: 6px;
 }
 
-.dial__time {
-  font-size: 58px;
-  font-weight: 600;
+.savasana__time {
+  font-size: 40px;
+  font-weight: 500;
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
 
-.dial__cue {
-  max-width: 150px;
+.savasana__cue {
+  max-width: 120px;
   text-align: center;
-  font-size: 14px;
-  line-height: 1.3;
-  color: var(--label-2);
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.35;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-2);
   animation: rise 0.9s var(--ease);
 }
 
-.savasana[data-status="done"] .dial__cue {
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--label);
+.savasana__pill {
+  margin-top: 16px;
+  padding-left: 20px;
+  background: var(--pastel-violet);
 }
 
-.savasana__hint {
+.app[data-mode="savasana"] .ashtanga,
+.app[data-mode="savasana"] .chakra-arc,
+.app[data-mode="savasana"] .week,
+.app[data-mode="savasana"] .topbar {
+  opacity: 0.35;
+}
+
+.ashtanga,
+.chakra-arc,
+.week,
+.topbar {
+  transition: opacity 1.5s var(--ease);
+}
+
+/* ---------- Right rail: week ---------- */
+
+.week__count {
+  display: flex;
+  align-items: baseline;
+  margin-top: 6px;
+  line-height: 1;
+}
+
+.week__count strong {
+  font-size: 56px;
+  font-weight: 600;
+  letter-spacing: -0.05em;
+}
+
+.week__count span {
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--ink-3);
+}
+
+.week__status {
+  font-weight: 500;
+}
+
+.week__count[data-met="true"] strong {
+  background: linear-gradient(90deg, #ff453a, #ff9f0a, #ffd60a, #30d158, #32ade6, #5e5ce6, #bf5af2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.week__plan {
+  font-family: var(--mono);
+  font-size: 10px !important;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-3) !important;
+}
+
+.segmented {
+  display: inline-flex;
+  margin-top: 12px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+.segmented__opt {
+  padding: 5px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  transition:
+    background 0.25s,
+    color 0.25s;
+}
+
+.segmented__opt[aria-checked="true"] {
+  background: var(--ink);
+  color: #fff;
+}
+
+.week__days {
+  list-style: none;
   margin: 0;
+  padding: 0;
+}
+
+.week__day {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  transform: translate(-11px, -50%);
+}
+
+.week__btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 4px 12px 4px 0;
+  border: 0;
+  background: none;
+  text-align: left;
+}
+
+.week__dot {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: #fff;
+  transition:
+    transform 0.5s var(--spring),
+    background 0.3s,
+    box-shadow 0.3s;
+}
+
+.week__dot svg {
+  width: 14px;
+  height: 14px;
+}
+
+.week__btn:hover:not(:disabled) .week__dot {
+  transform: scale(1.18);
+}
+
+.week__btn[data-kind="done"] .week__dot {
+  background: var(--ink);
+  box-shadow: none;
+}
+
+.week__btn[data-kind="today"] .week__dot {
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+}
+
+.week__btn[data-kind="future"] .week__dot {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgba(20, 20, 20, 0.08);
+}
+
+.week__label {
+  display: flex;
+  flex-direction: column;
+}
+
+.week__label strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.week__label span {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.week__btn[data-kind="future"] .week__label {
+  opacity: 0.45;
+}
+
+.week__btn[data-kind="today"] strong,
+.week__btn[data-kind="done"] strong {
+  font-weight: 700;
+}
+
+.week__foot {
+  position: absolute;
+  left: 960px;
+  top: 612px;
+  width: 230px;
+}
+
+.boxed {
+  display: flex;
+  border: 1px solid var(--ink);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.boxed__cell {
+  flex: 1;
+  padding: 9px 8px;
+  border: 0;
+  background: none;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   text-align: center;
-  font-size: 12px;
-  color: var(--label-3);
+  white-space: nowrap;
+}
+
+.boxed__cell + .boxed__cell {
+  border-left: 1px solid var(--ink);
+}
+
+.boxed__cell--action {
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.boxed__cell--action:hover,
+.boxed__cell--action[aria-pressed="true"] {
+  background: var(--ink);
+  color: #fff;
+}
+
+.week__auto {
+  margin: 8px 0 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* ---------- Stacked layout below 1200px ---------- */
+
+@media (max-width: 1199px) {
+  .stage {
+    width: auto;
+    height: auto;
+    max-width: 560px;
+    padding: 12px 16px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .stage__rails,
+  .rail-head--left {
+    display: none;
+  }
+
+  .stage__title,
+  .stage__detail,
+  .ashtanga,
+  .savasana,
+  .rail-head,
+  .week__foot,
+  .chakra-arc__item,
+  .week__day {
+    position: static;
+    transform: none;
+  }
+
+  .stage__title {
+    order: 1;
+    margin-top: 20px;
+  }
+
+  .orbit {
+    order: 2;
+    position: relative;
+    left: auto;
+    top: auto;
+    width: min(100%, 480px);
+    height: auto;
+    aspect-ratio: 1;
+    margin-top: -12px;
+  }
+
+  .orbit__ring {
+    width: 100%;
+    height: 100%;
+  }
+
+  .stage__detail {
+    order: 3;
+    width: 100%;
+    min-height: 52px;
+    margin-top: -12px;
+  }
+
+  .chakra-arc {
+    order: 4;
+    width: 100%;
+  }
+
+  .chakra-arc__list {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .chakra-arc__btn {
+    flex-direction: column-reverse;
+    gap: 8px;
+    padding: 0;
+    text-align: center;
+  }
+
+  .chakra-arc__label span {
+    display: none;
+  }
+
+  .chakra-arc__label strong {
+    font-size: 10px;
+  }
+
+  .chakra-arc__btn[data-active="true"] .chakra-arc__label {
+    transform: none;
+  }
+
+  .ashtanga {
+    order: 5;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .ashtanga__tile {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    min-height: 200px;
+    margin: 0;
+  }
+
+  .ashtanga__scrub {
+    width: 100%;
+    margin: 16px 0 10px;
+  }
+
+  .classes {
+    right: 0;
+  }
+
+  .savasana {
+    order: 6;
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .savasana__circle {
+    width: 220px;
+    height: 220px;
+    margin: 10px 0 0;
+  }
+
+  .savasana__pill {
+    width: 100%;
+  }
+
+  .week {
+    order: 7;
+    width: 100%;
+    max-width: 420px;
+    padding: 22px;
+    border-radius: 28px;
+    background: #fff;
+  }
+
+  .rail-head--right {
+    width: auto;
+  }
+
+  .week__days {
+    display: flex;
+    justify-content: space-between;
+    margin: 22px 0;
+  }
+
+  .week__btn {
+    flex-direction: column;
+    gap: 8px;
+    padding: 0;
+    text-align: center;
+  }
+
+  .week__label span {
+    display: none;
+  }
+
+  .week__label strong {
+    font-size: 11px;
+  }
+
+  .week__foot {
+    width: 100%;
+  }
+}
+
+@media (max-width: 720px) {
+  .topbar__mid {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .body__label {
+    display: none;
+  }
 }
 
 /* ---------- Keyframes ---------- */
@@ -940,7 +1344,7 @@ button:disabled {
     transform: scale(1);
   }
   50% {
-    transform: scale(1.25);
+    transform: scale(1.2);
   }
 }
 
@@ -950,7 +1354,7 @@ button:disabled {
     opacity: 0.05;
   }
   50% {
-    opacity: 0.55;
+    opacity: 0.6;
   }
 }
 
@@ -960,7 +1364,7 @@ button:disabled {
     transform: scale(0.82);
   }
   50% {
-    transform: scale(1.08);
+    transform: scale(1.1);
   }
 }
 
