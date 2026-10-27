@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CHAKRA_ARC, STAGE, WEEK_ARC, arcPath } from "@/lib/arc";
 import { CHAKRAS } from "@/lib/chakras";
-import { useCloudSync } from "@/lib/cloud";
+import { useCloudSync, usePresence } from "@/lib/cloud";
 import { summarize } from "@/lib/practiceStore";
 import { usePracticeStore, useToday } from "@/lib/usePractice";
 import { dayName, shortDate } from "@/lib/week";
@@ -32,6 +32,7 @@ export default function Experience() {
   const store = usePracticeStore();
 
   useCloudSync();
+  usePresence();
 
   const notify = useCallback((message: string) => {
     setToast(message);

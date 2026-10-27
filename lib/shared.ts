@@ -6,7 +6,12 @@ export type SharedPractice = {
   days: string[];
   goal: GoalSetting;
   updatedAt: number;
+  /** Last time the app was open for this profile (ms), if known. */
+  lastSeen?: number;
 };
+
+/** A heartbeat younger than this means "in the app right now". */
+export const ONLINE_MS = 150_000;
 
 export const SLUG_PATTERN = /^[\p{Ll}][\p{Ll}'-]{0,29}$/u;
 const DAY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;

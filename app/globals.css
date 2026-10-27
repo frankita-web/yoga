@@ -330,6 +330,40 @@ button:disabled {
   font-weight: 600;
 }
 
+.friend__avatar {
+  position: relative;
+}
+
+.friend__online {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #30d158;
+  box-shadow: 0 0 0 2px var(--pill);
+  opacity: 0;
+  transform: scale(0.4);
+  transition:
+    opacity 0.3s,
+    transform 0.5s var(--spring);
+}
+
+.friend[data-online="true"] .friend__online {
+  opacity: 1;
+  transform: scale(1);
+  animation: online 2.4s ease-in-out infinite;
+}
+
+@keyframes online {
+  50% {
+    box-shadow:
+      0 0 0 2px var(--pill),
+      0 0 0 6px rgba(48, 209, 88, 0.18);
+  }
+}
+
 .friend .pill__text .mono {
   font-size: 10px;
 }

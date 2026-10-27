@@ -50,6 +50,44 @@ export function useCloudSync() {
   }, [ready, id, profile.name, state.days, state.goal]);
 }
 
+const HEARTBEAT_MS = 60_000;
+
+/** Tells friends this profile has the app open (every minute while visible). */
+export function usePresence() {
+  const id = cloudId(useProfile());
+
+  useEffect(() => {
+    const beat = () => {
+      if (document.visibilityState !== "visible") return;
+      fetch(`/api/presence/${encodeURIComponent(id)}`, { method: "POST" }).catch(() => {});
+    };
+    beat();
+    const t = setInterval(beat, HEARTBEAT_MS);
+    document.addEventListener("visibilitychange", beat);
+    return () => {
+      clearInterval(t);
+      document.removeEventListener("visibilitychange", beat);
+    };
+  }, [id]);
+}
+
+let now = 0;
+
+/** Current time in ms, refreshed every 30 s (0 during the server render). */
+export function useNow() {
+  return useSyncExternalStore(
+    (onChange) => {
+      const t = setInterval(() => {
+        now = Date.now();
+        onChange();
+      }, 30_000);
+      return () => clearInterval(t);
+    },
+    () => (now ||= Date.now()),
+    () => 0,
+  );
+}
+
 export type FriendState = { status: "loading" | "missing" | "offline" } | { status: "ok"; data: SharedPractice };
 
 const POLL_MS = 60_000;
