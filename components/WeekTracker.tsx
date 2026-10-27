@@ -1,15 +1,8 @@
 "use client";
 
 import { WEEK_ARC, arcPoints } from "@/lib/arc";
-import {
-  AUTO_LOG_SECONDS,
-  WEEKS_TO_LEVEL_UP,
-  setGoal,
-  summarize,
-  toggleDay,
-  type GoalSetting,
-} from "@/lib/practiceStore";
-import { usePractice, useToday } from "@/lib/usePractice";
+import { AUTO_LOG_SECONDS, WEEKS_TO_LEVEL_UP, summarize, type GoalSetting } from "@/lib/practiceStore";
+import { usePractice, usePracticeStore, useToday } from "@/lib/usePractice";
 import { dayName, isoWeek, shortDate, weekDays } from "@/lib/week";
 
 const POINTS = arcPoints(7, WEEK_ARC);
@@ -22,6 +15,7 @@ const GOALS: { value: GoalSetting; label: string }[] = [
 
 export default function WeekTracker() {
   const state = usePractice();
+  const { setGoal, toggleDay } = usePracticeStore();
   const today = useToday();
   const ready = today !== "";
   const summary = ready ? summarize(state, today) : null;
@@ -92,7 +86,14 @@ export default function WeekTracker() {
                 <span className="week__dot">
                   {done && (
                     <svg viewBox="0 0 16 16" aria-hidden="true">
-                      <path d="M4 8.5l2.5 2.5L12 5.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path
+                        d="M4 8.5l2.5 2.5L12 5.5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                   )}
                 </span>
@@ -108,9 +109,7 @@ export default function WeekTracker() {
 
       <footer className="week__foot">
         <div className="boxed">
-          <span className="boxed__cell">
-            Racha · {summary?.streak ?? 0} sem
-          </span>
+          <span className="boxed__cell">Racha · {summary?.streak ?? 0} sem</span>
           <button
             className="boxed__cell boxed__cell--action"
             onClick={() => ready && toggleDay(today)}

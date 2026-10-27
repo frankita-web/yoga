@@ -1,8 +1,20 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
-import { getServerSnapshot, getSnapshot, subscribe } from "./practiceStore";
+import { createContext, useContext, useSyncExternalStore } from "react";
+import { getServerSnapshot, practiceStore } from "./practiceStore";
+import { OWNER, type Profile } from "./profile";
 import { dateKey } from "./week";
+
+export const ProfileContext = createContext<Profile>(OWNER);
+
+export function useProfile() {
+  return useContext(ProfileContext);
+}
+
+/** Practice store for the current profile. */
+export function usePracticeStore() {
+  return practiceStore(useProfile().id);
+}
 
 function subscribeClock(onChange: () => void) {
   const t = setInterval(onChange, 60_000);
@@ -19,7 +31,8 @@ export function useToday() {
 }
 
 export function usePractice() {
-  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const store = usePracticeStore();
+  return useSyncExternalStore(store.subscribe, store.getSnapshot, getServerSnapshot);
 }
 
 /** Current hour (0–23), or -1 during the server render. */
@@ -32,7 +45,7 @@ export function useHour() {
 }
 
 // The day the mantra pop-up was last shown, so it opens once per day.
-const SEEN_KEY = "prana.mantra.seen";
+const seenKey = (profileId: string) => (profileId ? `prana.mantra.seen.${profileId}` : "prana.mantra.seen");
 const seenListeners = new Set<() => void>();
 
 function subscribeSeen(listener: () => void) {
@@ -40,16 +53,17 @@ function subscribeSeen(listener: () => void) {
   return () => seenListeners.delete(listener);
 }
 
-export function markMantraSeen(day: string) {
-  localStorage.setItem(SEEN_KEY, day);
+export function markMantraSeen(profileId: string, day: string) {
+  localStorage.setItem(seenKey(profileId), day);
   seenListeners.forEach((l) => l());
 }
 
 /** Day key the mantra was last seen, or null during the server render. */
 export function useMantraSeen() {
+  const { id } = useProfile();
   return useSyncExternalStore(
     subscribeSeen,
-    () => localStorage.getItem(SEEN_KEY) ?? "",
+    () => localStorage.getItem(seenKey(id)) ?? "",
     () => null,
   );
 }

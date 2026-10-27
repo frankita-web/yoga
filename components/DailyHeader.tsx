@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { CHAKRAS } from "@/lib/chakras";
 import { REPETITIONS, mantraFor } from "@/lib/mantras";
 import { summarize } from "@/lib/practiceStore";
-import { NAME, greeting } from "@/lib/profile";
-import { markMantraSeen, useHour, useMantraSeen, usePractice, useToday } from "@/lib/usePractice";
+import { greeting } from "@/lib/profile";
+import { markMantraSeen, useHour, useMantraSeen, usePractice, useProfile, useToday } from "@/lib/usePractice";
 import { dayName, shortDate } from "@/lib/week";
 
 const BEAD_RADIUS = 104;
@@ -22,6 +22,7 @@ export default function DailyHeader() {
   const hour = useHour();
   const seen = useMantraSeen();
   const practice = usePractice();
+  const { id: profileId, name } = useProfile();
   const [reopened, setReopened] = useState(false);
   const [count, setCount] = useState(0);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -40,7 +41,7 @@ export default function DailyHeader() {
   }, [open]);
 
   const close = () => {
-    if (today) markMantraSeen(today);
+    if (today) markMantraSeen(profileId, today);
     setReopened(false);
   };
 
@@ -55,7 +56,7 @@ export default function DailyHeader() {
   return (
     <section className="daily">
       <h1 className="daily__hello">
-        {greeting(hour)}, {NAME}.
+        {greeting(hour)}, {name}.
       </h1>
       <p className="daily__sub">{summary ? weekLine(summary.count, summary.goal) : " "}</p>
 
@@ -89,7 +90,7 @@ export default function DailyHeader() {
               Mantra del día · {today ? `${dayName(today)} ${shortDate(today)}` : ""}
             </p>
             <p className="mantra__hello">
-              {greeting(hour)}, {NAME}. Repite conmigo:
+              {greeting(hour)}, {name}. Repite conmigo:
             </p>
             <h2 id="mantra-text" className="mantra__text">
               {mantra.text}

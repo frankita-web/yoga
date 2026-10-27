@@ -3,13 +3,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CHAKRA_ARC, STAGE, WEEK_ARC, arcPath } from "@/lib/arc";
 import { CHAKRAS } from "@/lib/chakras";
-import { addListened, getSnapshot, summarize } from "@/lib/practiceStore";
-import { useToday } from "@/lib/usePractice";
+import { summarize } from "@/lib/practiceStore";
+import { usePracticeStore, useToday } from "@/lib/usePractice";
 import { dayName, shortDate } from "@/lib/week";
 import AshtangaPlayer from "./AshtangaPlayer";
 import ChakraArc from "./ChakraArc";
 import ChakraBody, { type BodyMode } from "./ChakraBody";
 import DailyHeader from "./DailyHeader";
+import InviteButton from "./InviteButton";
 import SavasanaTimer from "./SavasanaTimer";
 import WeekTracker from "./WeekTracker";
 
@@ -27,6 +28,7 @@ export default function Experience() {
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const today = useToday();
+  const store = usePracticeStore();
 
   const mode: BodyMode = resting ? "savasana" : practicing ? "practice" : "idle";
 
@@ -48,14 +50,14 @@ export default function Experience() {
   useEffect(() => {
     if (!practicing || !today) return;
     const t = setInterval(() => {
-      if (!addListened(today, LISTEN_TICK)) return;
-      const { count, goal } = summarize(getSnapshot(), today);
+      if (!store.addListened(today, LISTEN_TICK)) return;
+      const { count, goal } = summarize(store.getSnapshot(), today);
       setToast(`Práctica registrada · ${count} de ${goal} esta semana`);
       clearTimeout(toastTimer.current);
       toastTimer.current = setTimeout(() => setToast(null), 5000);
     }, LISTEN_TICK * 1000);
     return () => clearInterval(t);
-  }, [practicing, today]);
+  }, [practicing, today, store]);
 
   useEffect(() => () => clearTimeout(toastTimer.current), []);
 
@@ -79,7 +81,10 @@ export default function Experience() {
     <div className="app" data-mode={mode} style={{ ["--accent" as string]: active?.color ?? "#d9d9d6" }}>
       <header className="topbar">
         <span className="wordmark">Prana</span>
-        <span className="mono">{today ? `${dayName(today)} ${shortDate(today)}` : ""}</span>
+        <span className="topbar__end">
+          <span className="mono">{today ? `${dayName(today)} ${shortDate(today)}` : ""}</span>
+          <InviteButton />
+        </span>
       </header>
 
       <DailyHeader />

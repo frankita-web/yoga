@@ -1,5 +1,6 @@
-import Experience from "@/components/Experience";
+import App from "@/components/App";
+import { OWNER } from "@/lib/profile";
 
 export default function Home() {
-  return <Experience />;
+  return <App profile={OWNER} />;
 }

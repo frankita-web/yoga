@@ -18,68 +18,87 @@ export const AUTO_LOG_SECONDS = 20 * 60;
 /** In auto mode, weeks at 2× needed before the goal rises to 3×. */
 export const WEEKS_TO_LEVEL_UP = 4;
 
-const KEY = "prana.practice.v1";
 const EMPTY: PracticeState = { days: [], listened: {}, goal: "auto" };
 
-let cache: PracticeState = EMPTY;
-let cacheRaw: string | null = null;
-const listeners = new Set<() => void>();
+export const getServerSnapshot = () => EMPTY;
 
-function read(): PracticeState {
-  const raw = localStorage.getItem(KEY);
-  if (raw === cacheRaw) return cache;
-  cacheRaw = raw;
-  try {
-    cache = raw ? { ...EMPTY, ...JSON.parse(raw) } : EMPTY;
-  } catch {
-    cache = EMPTY;
-  }
-  return cache;
-}
+export type PracticeStore = ReturnType<typeof createStore>;
 
-function write(next: PracticeState) {
-  const raw = JSON.stringify(next);
-  localStorage.setItem(KEY, raw);
-  cacheRaw = raw;
-  cache = next;
-  listeners.forEach((l) => l());
-}
+// One store per profile, each under its own localStorage key, so a shared
+// link (e.g. /antonia) keeps its own log even on the same browser.
+function createStore(key: string) {
+  let cache: PracticeState = EMPTY;
+  let cacheRaw: string | null = null;
+  const listeners = new Set<() => void>();
 
-export function subscribe(listener: () => void) {
-  listeners.add(listener);
-  const onStorage = (e: StorageEvent) => e.key === KEY && listener();
-  window.addEventListener("storage", onStorage);
-  return () => {
-    listeners.delete(listener);
-    window.removeEventListener("storage", onStorage);
+  const read = (): PracticeState => {
+    const raw = localStorage.getItem(key);
+    if (raw === cacheRaw) return cache;
+    cacheRaw = raw;
+    try {
+      cache = raw ? { ...EMPTY, ...JSON.parse(raw) } : EMPTY;
+    } catch {
+      cache = EMPTY;
+    }
+    return cache;
+  };
+
+  const write = (next: PracticeState) => {
+    const raw = JSON.stringify(next);
+    localStorage.setItem(key, raw);
+    cacheRaw = raw;
+    cache = next;
+    listeners.forEach((l) => l());
+  };
+
+  return {
+    subscribe(listener: () => void) {
+      listeners.add(listener);
+      const onStorage = (e: StorageEvent) => e.key === key && listener();
+      window.addEventListener("storage", onStorage);
+      return () => {
+        listeners.delete(listener);
+        window.removeEventListener("storage", onStorage);
+      };
+    },
+
+    getSnapshot: read,
+
+    toggleDay(day: string) {
+      const s = read();
+      const days = s.days.includes(day) ? s.days.filter((d) => d !== day) : [...s.days, day].sort();
+      write({ ...s, days });
+    },
+
+    setGoal(goal: GoalSetting) {
+      write({ ...read(), goal });
+    },
+
+    /** Adds listening time for `day`; returns true if this logged the day. */
+    addListened(day: string, seconds: number) {
+      const s = read();
+      const total = (s.listened[day] ?? 0) + seconds;
+      // Keep only the last two weeks of listening data.
+      const cutoff = addDays(day, -14);
+      const listened = Object.fromEntries(Object.entries({ ...s.listened, [day]: total }).filter(([d]) => d >= cutoff));
+      const logs = total >= AUTO_LOG_SECONDS && !s.days.includes(day);
+      write({ ...s, listened, days: logs ? [...s.days, day].sort() : s.days });
+      return logs;
+    },
   };
 }
 
-export const getSnapshot = () => read();
-export const getServerSnapshot = () => EMPTY;
+const stores = new Map<string, PracticeStore>();
 
-export function toggleDay(key: string) {
-  const s = read();
-  const days = s.days.includes(key) ? s.days.filter((d) => d !== key) : [...s.days, key].sort();
-  write({ ...s, days });
-}
-
-export function setGoal(goal: GoalSetting) {
-  write({ ...read(), goal });
-}
-
-/** Adds listening time for `key`; returns true if this logged the day. */
-export function addListened(key: string, seconds: number) {
-  const s = read();
-  const total = (s.listened[key] ?? 0) + seconds;
-  // Keep only the last two weeks of listening data.
-  const cutoff = addDays(key, -14);
-  const listened = Object.fromEntries(
-    Object.entries({ ...s.listened, [key]: total }).filter(([d]) => d >= cutoff),
-  );
-  const logs = total >= AUTO_LOG_SECONDS && !s.days.includes(key);
-  write({ ...s, listened, days: logs ? [...s.days, key].sort() : s.days });
-  return logs;
+/** Store for a profile; the owner ("") keeps the original key. */
+export function practiceStore(profileId: string) {
+  const key = profileId ? `prana.practice.v1.${profileId}` : "prana.practice.v1";
+  let store = stores.get(key);
+  if (!store) {
+    store = createStore(key);
+    stores.set(key, store);
+  }
+  return store;
 }
 
 export type Summary = {
@@ -125,7 +144,6 @@ export function summarize(state: PracticeState, today: string): Summary {
     goal: currentGoal,
     count: perWeek.get(current) ?? 0,
     streak,
-    levelUpProgress:
-      state.goal === "auto" && currentGoal === 2 ? Math.min(weeksAtTwo, WEEKS_TO_LEVEL_UP) : null,
+    levelUpProgress: state.goal === "auto" && currentGoal === 2 ? Math.min(weeksAtTwo, WEEKS_TO_LEVEL_UP) : null,
   };
 }
